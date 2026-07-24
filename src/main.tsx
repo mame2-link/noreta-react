@@ -1,23 +1,22 @@
-import React from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
 import { BrowserRouter, Routes, Route } from "react-router";
 
-import App from "./App.tsx";
-import "./index.css";
+import Home from "./Home/Home.tsx";
+import Stop from "./Stop/Stop.tsx";
+// import "./index.css";
 
-import { Amplify } from "aws-amplify";
-import outputs from "../amplify_outputs.json";
 
-Amplify.configure(outputs);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 
-  <React.StrictMode>
+  <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/stop/:stopId" element={<Stop />} />
       </Routes>
     </BrowserRouter>
-  </React.StrictMode>
+  </StrictMode>
 );
