@@ -1,19 +1,20 @@
 // import { useLocation } from "react-router-dom";
+import type { Schema } from "../../amplify/data/resource";
 
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-import {
-  toHalfWidth,
-  // setLinkCanonical,
-  setMetaOgTitle,
-} from "../Common/CommonFunc";
-import { agencies } from "../Common/Agencies";
+// import {
+//   toHalfWidth,
+//   // setLinkCanonical,
+//   setMetaOgTitle,
+// } from "../Common/CommonFunc";
+// import { agencies } from "../Common/Agencies";
 
 // const MAX_HEADSING = 3;
 
-export function StopName(props) {
+export function StopName(props: { stop: Schema["Stop"]["type"]; }) {
   const stop = props.stop;
 
   // location query
