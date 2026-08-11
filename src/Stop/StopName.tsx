@@ -14,8 +14,8 @@ import Typography from "@mui/material/Typography";
 
 // const MAX_HEADSING = 3;
 
-export function StopName(props: { stop: Schema["Stop"]["type"]; }) {
-  const stop = props.stop;
+export function StopName({ stop }: { stop: Schema["Stop"]["type"] }) {
+  // const stop = props.stop;
 
   // location query
   // const location = useLocation();

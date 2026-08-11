@@ -1,19 +1,16 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 
 import Button from "@mui/material/Button";
 import UpdateIcon from "@mui/icons-material/Update";
 import Stack from "@mui/material/Stack";
 import { scrollToTop } from "../Common/CommonFunc";
 
-export function BeforeAndAfter(props) {
+export function BeforeAndAfter({ idx, len, num, handleFetchData }: { idx: number, len: number, num: number, handleFetchData: any }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  if (!Number.isInteger(props.idx)) return;
-  const idx = props.idx;
-  const len = props.len;
-  const NUM = props.num;
-  const handleFetchData = props.handleFetchData;
+  if (!Number.isInteger(idx)) return;
+  const NUM = num;
 
   // prev
   const prev = idx - NUM < 0 ? 0 : idx - NUM;

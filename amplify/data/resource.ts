@@ -1,5 +1,7 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
+import { googleMapsSignUrl } from "../functions/google-maps-sign-url/resource";
+
 const schema = a.schema({
   Headsign: a.customType({
     agency_id: a.string(),
@@ -151,14 +153,14 @@ const schema = a.schema({
         entry: "./getVehicle.js",
       })
     ),
-  // googleMapsSignUrl: a
-  //   .query()
-  //   .arguments({
-  //     path: a.string().required(),
-  //   })
-  //   .returns(a.string())
-  //   .authorization(allow => [allow.publicApiKey()])
-  //   .handler(a.handler.function(googleMapsSignUrl)),
+  googleMapsSignUrl: a
+    .query()
+    .arguments({
+      path: a.string().required(),
+    })
+    .returns(a.string())
+    .authorization(allow => [allow.publicApiKey()])
+    .handler(a.handler.function(googleMapsSignUrl)),
 });
 
 export type Schema = ClientSchema<typeof schema>;
@@ -172,18 +174,6 @@ export const data = defineData({
     },
   },
 });
-
-// export const data = defineData({
-//   schema,
-//   authorizationModes: {
-//     // defaultAuthorizationMode: "apiKey",
-//     defaultAuthorizationMode: 'userPool',
-//     // API Key is used for a.allow.public() rules
-//     apiKeyAuthorizationMode: {
-//       expiresInDays: 30,
-//     },
-//   },
-// });
 
 /*== STEP 2 ===============================================================
 Go to your frontend source code. From your client-side code, generate a

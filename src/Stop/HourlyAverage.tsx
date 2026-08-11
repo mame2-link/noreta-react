@@ -8,12 +8,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 // import Paper from "@mui/material/Paper";
 
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 
+import { StopTime } from "../lib/stop_time";
 import { /*initBaseTimestamp,*/ delayMin } from "../Common/CommonFunc";
 
-export function HourlyAverage(props) {
-  const stopTimes = props.stopTimes;
+export function HourlyAverage({ stopTimes }: { stopTimes: StopTime[] }) {
   const location = useLocation();
 
   // const timestamp0 = initBaseTimestamp();
@@ -36,7 +36,7 @@ export function HourlyAverage(props) {
   }
 
   let idx = 0;
-  for (let [key, value] of hourMap.entries()) {
+  for (const [key, value] of hourMap.entries()) {
     let min = null;
     let max = null;
     let delayStr = "データなし";
@@ -95,7 +95,7 @@ export function HourlyAverage(props) {
   );
 }
 
-function getHour(timeStr) {
+function getHour(timeStr: string) {
   return parseInt(timeStr.substr(0, timeStr.indexOf(":")));
 }
 

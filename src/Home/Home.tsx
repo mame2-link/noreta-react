@@ -6,13 +6,13 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
 // import { DefaultSearchBox } from "./DefaultSearchBox";
-// import { HomeFooter } from "./HomeFooter";
-// import { AgenciesList } from "./AgenciesList";
+import { HomeFooter } from "./HomeFooter";
+import { AgenciesList } from "./AgenciesList";
 
 // import { getStopsData } from "../Common/IndexedDb";
 
 // import { RecentlyAccessStops } from "./RecentlyAccessStops";
-// import { SearchButtons } from "./SearchButtons";
+import { SearchButtons } from "./SearchButtons";
 
 function Home() {
   // aws-amplify/analitycs
@@ -56,8 +56,9 @@ function Home() {
           <Typography component="h1" variant="h5">
             バス運行情報
           </Typography>
-          {/* <AgenciesList />
-          <SearchButtons /> */}
+
+          <AgenciesList />
+          <SearchButtons />
 
           {/* <Box sx={{ m: 2 }}>
             <DefaultSearchBox />
@@ -73,7 +74,7 @@ function Home() {
       {/* <Box sx={{ m: 2 }}>{stops && <RecentlyAccessStops stops={stops} />}</Box> */}
       <Box sx={{ my: 3 }}>
         <Container maxWidth="xs">
-          {/* <HomeFooter></HomeFooter> */}
+          <HomeFooter></HomeFooter>
         </Container>
       </Box>
     </>

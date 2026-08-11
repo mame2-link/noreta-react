@@ -1,12 +1,8 @@
 import { useState, useEffect } from "react";
 
-import { generateClient } from "aws-amplify/api";
+import { getBatchRoutes, getBatchTrips, queryStopTimesByTripId } from "../lib/data";
 
-import {
-  queryStopTimesByTripId,
-  getBatchTrips,
-  getBatchRoutes,
-} from "../../graphql/queries";
+import { StopTime } from "../lib/stop_time";
 
 import Box from "@mui/material/Box";
 
@@ -26,28 +22,22 @@ import { DelayAlert } from "./DelayAlert";
 import { FilteredCardList } from "./FilteredCardList";
 import { HourlyAverage } from "./HourlyAverage";
 
-export function FilteredWithDelayedStopTimes(props) {
-  const client = generateClient();
-  const stopTimes = props.stopTimes;
-  const nowStr = props.nowStr;
+export function FilteredWithDelayedStopTimes({ stopTimes, nowStr }: { stopTimes: StopTime[], nowStr: string }) {
   const idx = getStopTimesAnchorIndex(stopTimes);
   // const [uncertainStopTimes, setUncertainStopTimes] = useState();
   // const [tripMap, setTripMap] = useState();
   // const [routeMap, setRouteMap] = useState();
   const [states, setStates] = useState(null);
 
-  async function fetchData(stopTimes) {
+  async function fetchData(stopTimes: StopTime[]) {
     const uStArr = [];
     for (const stopTime of stopTimes) {
       const tripId = stopTime.trip_id;
       const seq = stopTime.stop_sequence;
-      const sts = await client.graphql({
-        query: queryStopTimesByTripId,
-        variables: { trip_id: tripId },
-      });
-      const { items: datas /* nextToken */ } = sts.data.queryStopTimesByTripId;
-
+      const datas = await queryStopTimesByTripId(tripId);
       const m_idx = getSeqIndex(datas, seq);
+
+      console.log("m_idx =", m_idx);
 
       // 当該バス停以降で到着確認がある
       let l_idx = m_idx + 1;
@@ -108,13 +98,10 @@ export function FilteredWithDelayedStopTimes(props) {
     for (const stopTime of uStArr) {
       tripIdSet.add(stopTime.trip_id);
     }
-    const tripIds = Array.from(tripIdSet);
-    const t = await client.graphql({
-      query: getBatchTrips,
-      variables: { ids: tripIds },
-    });
+    const tripIds  = Array.from(tripIdSet) as Array<string>;
+    const trips = await getBatchTrips(tripIds);
     const tMap = new Map();
-    for (const tData of t.data.getBatchTrips) {
+    for (const tData of trips) {
       tMap.set(tData.trip_id, tData);
     }
     // setTripMap(tMap);
@@ -123,11 +110,7 @@ export function FilteredWithDelayedStopTimes(props) {
     for (const key of tMap.keys()) {
       rSet.add(tMap.get(key).route_id);
     }
-    const r = await client.graphql({
-      query: getBatchRoutes,
-      variables: { ids: Array.from(rSet) },
-    });
-    const routes = r.data.getBatchRoutes;
+    const routes = await getBatchRoutes(Array.from(rSet));
     const rMap = new Map();
     for (const route of routes) {
       rMap.set(route.route_id, route);

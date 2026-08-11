@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import IconButton from "@mui/material/IconButton";
 import InputBase from "@mui/material/InputBase";

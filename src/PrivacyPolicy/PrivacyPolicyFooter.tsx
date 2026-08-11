@@ -1,7 +1,8 @@
-import { Box, Link } from "@mui/material";
-import Stack from "@mui/material/Stack";
+import { Box, Link, Stack } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import { Logo1Icon } from "../Common/Logo1Icon";
 
-export function HomeFooter() {
+export function PrivacyPolicyFooter() {
   return (
     <footer>
       <Stack
@@ -12,9 +13,14 @@ export function HomeFooter() {
           alignItems: "center",
         }}
       >
-        <Link href="/privacy" variant="body2">
-          プライバシーポリシー
-        </Link>
+        <IconButton
+          size="small"
+          color="primary"
+          href="/"
+          aria-label="ホームに移動"
+        >
+          <Logo1Icon fontSize="small" />
+        </IconButton>
         <Link href="/terms" variant="body2">
           利用規約
         </Link>

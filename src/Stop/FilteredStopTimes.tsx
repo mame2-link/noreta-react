@@ -1,15 +1,13 @@
 import Box from "@mui/material/Box";
 
+import { StopTime } from "../lib/stop_time";
 import { FilteredCardList } from "./FilteredCardList";
 import { FilteredWithDelayedStopTimes } from "./FilteredWithDelayedStopTimes";
 import { getTimeString } from "../Common/CommonFunc";
 
-export function FilteredStopTimes(props) {
+export function FilteredStopTimes({ stopTimes, page, idx }: { stopTimes: StopTime[], page: number | null, idx: number }) {
   const NUM = 5;
-  const stopTimes = props.stopTimes;
   const len = stopTimes.length;
-  const page = props.page;
-  const idx = props.idx;
   const end = idx + NUM > len ? len : idx + NUM;
   const filtered = stopTimes.slice(idx, end);
   const nowStr = getTimeString();

@@ -1,12 +1,17 @@
 import { defineBackend } from '@aws-amplify/backend';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
+import { storage } from './storage/resource';
 
 import { aws_dynamodb } from "aws-cdk-lib";
+
+import { googleMapsSignUrl } from './functions/google-maps-sign-url/resource.js';
 
 export const backend = defineBackend({
   auth,
   data,
+  storage,
+  googleMapsSignUrl,
 });
 
 const externalDataSourcesStack = backend.createStack("ExternalDataSources");

@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
@@ -13,9 +13,10 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 
+import { StopTime } from "../lib/stop_time";
 import { hhmm, diffSec, getStopTimesAnchorIndex, scrollToTop } from "../Common/CommonFunc";
-export function Intervals(props) {
-  const stopTimes = props.stopTimes;
+
+export function Intervals({ stopTimes }: { stopTimes: StopTime[] }) {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
