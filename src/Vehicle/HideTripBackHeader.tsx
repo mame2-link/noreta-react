@@ -25,8 +25,19 @@ import DepartureBoardIcon from "@mui/icons-material/DepartureBoard";
 import { BusStopIcon } from "../Common/BusStopIcon";
 import { Logo1Icon } from "../Common/Logo1Icon";
 import { LineIcon } from "../Common/CommonFunc";
+import { Schema } from "../../amplify/data/resource";
 
-function HideOnScroll(props) {
+interface Props {
+  /**
+   * Injected by the documentation to work in an iframe.
+   * You won't need it on your project.
+   */
+  window?: () => Window;
+  children?: React.ReactElement<unknown>;
+}
+
+
+function HideOnScroll(props: Props) {
   const { children, window } = props;
   // Note that you normally won't need to set the window ref as useScrollTrigger
   // will default to window.
@@ -37,7 +48,7 @@ function HideOnScroll(props) {
 
   return (
     <Slide appear={false} direction="down" in={!trigger}>
-      {children}
+      {children ?? <div />}
     </Slide>
   );
 }
@@ -51,12 +62,12 @@ HideOnScroll.propTypes = {
   window: PropTypes.func,
 };
 
-export function HideTripBackHeader(props) {
+export function HideTripBackHeader({ trip_id, seq, stop }: { trip_id: string, seq: string, stop: Schema["Stop"]["type"] }) {
   const location = useLocation();
-  const [open, setOpen] = useState(false);
-  const trip_id = props.trip_id;
-  const seq = props.seq;
-  const stop = props.stop;
+  const [open, setOpen] = useState<boolean>(false);
+  // const trip_id = props.trip_id;
+  // const seq = props.seq;
+  // const stop = props.stop;
 
   let stopName = stop.stop_name;
   if (stop.platform_code) stopName += " " + stop.platform_code;
@@ -70,7 +81,7 @@ export function HideTripBackHeader(props) {
   const sendByLineUrl =
     "https://line.me/R/msg/text/?" + encodeURIComponent(lineTargetUrl);
 
-  const toggleDrawer = (newOpen) => () => {
+  const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
 
@@ -82,7 +93,7 @@ export function HideTripBackHeader(props) {
 
   return (
     <ThemeProvider theme={localtheme}>
-      <HideOnScroll {...props}>
+      <HideOnScroll>
         <AppBar elevation={0}>
           <Toolbar>
             <IconButton

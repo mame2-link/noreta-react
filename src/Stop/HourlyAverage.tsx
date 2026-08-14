@@ -26,7 +26,7 @@ export function HourlyAverage({ stopTimes }: { stopTimes: StopTime[] }) {
   let arr = null;
   for (const stopTime of stopTimes) {
     const departure_time = stopTime.departure_time;
-    const hour = getHour(departure_time);
+    const hour = getHour(departure_time!);
     if (last_hour !== hour) {
       last_hour = hour;
       hourMap.set(hour, []);

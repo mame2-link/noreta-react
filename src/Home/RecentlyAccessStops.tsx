@@ -1,4 +1,4 @@
-import React from "react";
+import { Schema } from "../../amplify/data/resource";
 
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 
 import { HeadsignList } from "./HeadsignList";
 
-function Stop({ stop }) {
+function Stop({ stop }: { stop: Schema["Stop"]["type"] }) {
   const stopUrl = "/stop/" + stop.stop_id;
   let stopName = stop.stop_name;
   if (stop.platform_code && stop.platform_code.length > 0) {
@@ -27,18 +27,17 @@ function Stop({ stop }) {
         </Link>
         <Typography>{stop.stop_kana}</Typography>
       </Box>
-      <meta itemProp="name" content={stop.stop_name} />
-      <meta itemProp="latitude" content={stop.stop_lat} />
-      <meta itemProp="longitude" content={stop.stop_lon} />
-      <HeadsignList headsign={stop.headsigns} />
+      <meta itemProp="name" content={String(stop.stop_name)} />
+      <meta itemProp="latitude" content={String(stop.stop_lat)} />
+      <meta itemProp="longitude" content={String(stop.stop_lon)} />
+      <HeadsignList headsign={stop.headsigns as Schema["Headsign"]["type"][]} />
     </Paper>
   );
 }
 
-export function RecentlyAccessStops(props) {
-  const stops = props.stops;
+export function RecentlyAccessStops({ stops }: { stops: Schema["Stop"]["type"][] }) {
+  if (!stops) return;
 
-  // null check
   const stop_list = [];
   for (const stop of stops) {
     if (stop && stop.stop_id) {

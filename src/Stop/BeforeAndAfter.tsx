@@ -5,7 +5,7 @@ import UpdateIcon from "@mui/icons-material/Update";
 import Stack from "@mui/material/Stack";
 import { scrollToTop } from "../Common/CommonFunc";
 
-export function BeforeAndAfter({ idx, len, num, handleFetchData }: { idx: number, len: number, num: number, handleFetchData: any }) {
+export function BeforeAndAfter({ idx, len, num, handleFetchData }: { idx: number, len: number, num: number, handleFetchData: () => Promise<void> }) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -28,9 +28,9 @@ export function BeforeAndAfter({ idx, len, num, handleFetchData }: { idx: number
     scrollToTop();
   }
 
-  const realtimeNavigate = () => {
+  const realtimeNavigate = async () => {
     navigate(location.pathname);
-    handleFetchData();
+    await handleFetchData();
     scrollToTop();
   }
 

@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router";
-// import { generateClient } from "aws-amplify/api";
-// import {
-//   getVehicles,
-//   getTrips,
-//   getRoutes,
-//   getStops,
-//   signUrl,
-// } from "../../graphql/queries";
+
+import type { Schema } from "../../amplify/data/resource";
+
+import { getVehicle, getTrip, getRoute, googleMapsSignUrl, getStop } from "../lib/data";
 
 // import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -15,20 +11,20 @@ import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-import { agencies } from "../Common/Agencies";
+// import { agencies } from "../Common/Agencies";
 import { HideTripBackHeader } from "./HideTripBackHeader";
 import { VehicleNumber } from "../Common/VehicleNumber";
 import { CommonFooter } from "../Common/CommonFooter";
-import { setLinkCanonical } from "../Common/CommonFunc";
+// import { setLinkCanonical } from "../Common/CommonFunc";
 import { VehicleAlart } from "./VehicleAlart";
 
 export default function Vehicle() {
   const { vehicleId } = useParams();
-  const [vehicle, setVehicle] = useState();
-  const [mapUri, setMapUri] = useState();
-  const [route, setRoute] = useState();
-  const [stop, setStop] = useState();
-  const [errorStatus, setErrorStatus] = useState(false);
+  const [vehicle, setVehicle] = useState<Schema["Vehicle"]["type"]>();
+  const [mapUri, setMapUri] = useState<string>();
+  const [route, setRoute] = useState<Schema["Route"]["type"]>();
+  const [stop, setStop] = useState<Schema["Stop"]["type"]>();
+  const [errorStatus, setErrorStatus] = useState<boolean>(false);
 
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -36,115 +32,90 @@ export default function Vehicle() {
   const seq = query.get("seq");
   const stop_id = query.get("stop_id");
 
-  async function fetchVehicle() {
-    const v = await client.graphql({
-      query: getVehicles,
-      variables: { vehicle_id: vehicleId },
-    });
-    if (!v.data.getVehicles) {
-      setErrorStatus(true);
-      return;
-    }
-    setVehicle(v.data.getVehicles);
-    const key = "&key=AIzaSyBcHbDCehfqxRKabPLW77AIY4qFLNDiq3U";
-    const zoom = "&zoom=16";
-    let width = window.innerWidth - 32;
-    if (width > 412) width = 412;
-    const size = "&size=" + width + "x" + width;
-    const center =
-      v.data.getVehicles.latitude + "," + v.data.getVehicles.longitude;
-    let markers =
-      "&markers=anchor:bottom%7Cicon:https://t2.mame2.link/marker.png%7C" +
-      center;
-    const noSignUrl =
-      "https://maps.googleapis.com/maps/api/staticmap?center=" +
-      center +
-      markers +
-      zoom +
-      size +
-      key;
-    const u = await client.graphql({
-      query: signUrl,
-      variables: { url: noSignUrl },
-    });
-    setMapUri(u.data.signUrl);
-
-    // trip
-    let tid = trip_id;
-    if (tid === null && v.data.getVehicles.trip_id) {
-      tid = v.data.getVehicles.trip_id;
-    }
-    if (tid === null) return;
-    const t = await client.graphql({
-      query: getTrips,
-      variables: { trip_id: tid },
-    });
-    if (!t.data.getTrips) return;
-
-    // route
-    const r = await client.graphql({
-      query: getRoutes,
-      variables: { route_id: t.data.getTrips.route_id },
-    });
-    if (!r.data.getRoutes) return;
-    const route = r.data.getRoutes;
-    setRoute(r.data.getRoutes);
-
-    // title description
-    let title = "車両情報 ";
-    let description = "の車両情報です";
-    let vehicle_num = null;
-
-    const n = route.agency_id.length + 1;
-    vehicle_num = vehicleId.slice(n);
-    const agency_name = agencies.get(route.agency_id).agency_name;
-    title = title + vehicle_num + " " + agency_name;
-    description = agency_name + " " + vehicle_num + " " + description;
-    document.title = title;
-    document
-      .querySelector('meta[name="description"]')
-      .setAttribute("content", description);
-    const canonical_url = "https://t2.mame2.link/vehicle/" + vehicleId;
-    setLinkCanonical(canonical_url);
-
-    // GA4
-    // window.gtag('js', new Date());
-    // window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search })
-    // window.gtag('config', 'G-L8YDJSX9JX');
-
-    // stop
-    if (!stop_id) return;
-    const s = await client.graphql({
-      query: getStops,
-      variables: { stop_id: stop_id },
-    });
-    if (!s.data.getStops) return;
-    setStop(s.data.getStops);
-
-  }
-
   let vehicle_num = null;
-  if (route) {
+  if (route && vehicleId) {
     const n = route.agency_id.length + 1;
     vehicle_num = vehicleId.slice(n);
   }
 
   useEffect(() => {
+    const fetchVehicle = async () => {
+      if (!vehicleId) return;
+      const vehicle = await getVehicle(vehicleId);
+      if (!vehicle) {
+        setErrorStatus(true);
+        return;
+      }
+      setVehicle(vehicle);
+      const key = "&key=AIzaSyBcHbDCehfqxRKabPLW77AIY4qFLNDiq3U";
+      const zoom = "&zoom=16";
+      let width = window.innerWidth - 32;
+      if (width > 412) width = 412;
+      const size = "&size=" + width + "x" + width;
+      const center =
+        vehicle.latitude + "," + vehicle.longitude;
+      const markers =
+        "&markers=anchor:bottom%7Cicon:https://t2.mame2.link/marker.png%7C" +
+        center;
+      const noSignUrl =
+        "https://maps.googleapis.com/maps/api/staticmap?center=" +
+        center +
+        markers +
+        zoom +
+        size +
+        key;
+
+      const mapUri = await googleMapsSignUrl(noSignUrl);
+      if (mapUri.data) setMapUri(mapUri.data);
+
+      // trip
+      let tid = trip_id;
+      if (tid === null && vehicle.trip_id) {
+        tid = vehicle.trip_id;
+      }
+      if (tid === null) return;
+      const trip = await getTrip(tid);
+      if (!trip) return;
+
+      // route
+      const route = await getRoute(trip.route_id!);
+      if (!route) return;
+      setRoute(route);
+
+      // title description
+      // let title = "車両情報 ";
+      // let description = "の車両情報です";
+      // let vehicle_num = null;
+
+      // const n = route.agency_id.length + 1;
+      // vehicle_num = vehicleId.slice(n);
+      // const agency_name = agencies.get(route.agency_id).agency_name;
+      // title = title + vehicle_num + " " + agency_name;
+      // description = agency_name + " " + vehicle_num + " " + description;
+      // document.title = title;
+      // document
+      //   .querySelector('meta[name="description"]')
+      //   .setAttribute("content", description);
+      // const canonical_url = "https://t2.mame2.link/vehicle/" + vehicleId;
+      // setLinkCanonical(canonical_url);
+
+      // stop
+      if (!stop_id) return;
+      const stop = await getStop(stop_id);
+      if (!stop.data) return;
+      setStop(stop.data);
+    }
     fetchVehicle();
   }, []);
 
   let dt = null;
   let latest_trip_url = null;
   let past_min = null;
-
-
   let device_map_url = null;
-
-
 
   // let severity = "info";
   if (vehicle) {
-    const vDate = new Date(vehicle.timestamp * 1000);
+    const vDate = new Date(vehicle.timestamp! * 1000);
     dt = vDate.toLocaleTimeString();
     if (vehicle.trip_id && vehicle.trip_id !== trip_id) {
       latest_trip_url = "/trip/" + vehicle.trip_id + "?seq=1";
@@ -190,7 +161,7 @@ export default function Vehicle() {
 
   return (
     <>
-      {stop && (
+      {stop && trip_id && seq &&(
         <HideTripBackHeader
           trip_id={trip_id}
           seq={seq}

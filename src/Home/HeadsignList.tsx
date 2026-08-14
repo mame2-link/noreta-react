@@ -3,13 +3,14 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
 import { toHalfWidth } from "../Common/CommonFunc";
+import { Schema } from "../../amplify/data/resource";
 
-export function HeadsignList(props) {
-  const list = props.headsign;
+export function HeadsignList({ headsign }: { headsign: Schema["Headsign"]["type"][] }) {
+  const list = headsign;
   const headsigns = [];
   const MAX = 10;
 
-  for (const i in list) {
+  for (let i = 0; i < list.length; i++) {
     if (i >= MAX) break;
     headsigns.push(
       <Grid key={i} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
@@ -23,7 +24,7 @@ export function HeadsignList(props) {
             color: "common.white",
           }}
         >
-          {list[i]?.route_short_name && (
+          {list[i].route_short_name && (
             <Box
               sx={{
                 color: "secondary.main",
@@ -33,7 +34,7 @@ export function HeadsignList(props) {
               }}
             >
               <Typography sx={{ whiteSpace: "nowrap" }}>
-                {toHalfWidth(list[i]?.route_short_name)}
+                {toHalfWidth(list[i].route_short_name!)}
               </Typography>
             </Box>
           )}
@@ -47,7 +48,7 @@ export function HeadsignList(props) {
               m: 1,
             }}
           >
-            {list[i]?.headsign}
+            {list[i].headsign}
           </Typography>
         </Box>
       </Grid>

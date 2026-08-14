@@ -32,10 +32,6 @@ export function StopTimes({ stop, page }: { stop: Schema["Stop"]["type"], page: 
   useEffect(() => {
     const fetchData = async () => {
       const stop_times = await queryStopTimesByStopIdIndex(stop.stop_id) as StopTime[];
-      // if (!value.data) {
-      //   setErrorStatus(true);
-      //   return;
-      // } 
       setStopTimes(stop_times);
     };
     fetchData();
@@ -46,8 +42,9 @@ export function StopTimes({ stop, page }: { stop: Schema["Stop"]["type"], page: 
     // }
   }, []);
 
-  const handleFetchData = () => {
-    fetchData();
+  const handleFetchData = async () => {
+    const stop_times = await queryStopTimesByStopIdIndex(stop.stop_id) as StopTime[];
+    setStopTimes(stop_times);;
   };
 
   return (
@@ -59,8 +56,8 @@ export function StopTimes({ stop, page }: { stop: Schema["Stop"]["type"], page: 
 
       {stopTimes && stopTimes.length !== 0 && (
         <>
-          <BeforeAndAfter idx={idx} len={stopTimes.length} num={5} handleFetchData={handleFetchData} />
-          <FilteredStopTimes stopTimes={stopTimes} page={page} idx={idx} />
+          <BeforeAndAfter idx={idx!} len={stopTimes.length} num={5} handleFetchData={handleFetchData} />
+          <FilteredStopTimes stopTimes={stopTimes} page={page} idx={idx!} />
           {/* {page === null && <AutoUpdate handleFetchData={handleFetchData}></AutoUpdate>} */}
           <Intervals stopTimes={stopTimes} />
         </>

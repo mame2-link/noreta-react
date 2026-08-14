@@ -46,7 +46,7 @@ function HideOnScroll(props: Props) {
 
   return (
     <Slide appear={false} direction="down" in={!trigger}>
-      {children}
+      {children ?? <div />}
     </Slide>
   );
 }
@@ -76,7 +76,7 @@ export function HideBackHeader({ stop }: { stop: Schema["Stop"]["type"] }) {
   const sendByLineUrl =
     "https://line.me/R/msg/text/?" + encodeURIComponent(lineTargetUrl);
 
-  const toggleDrawer = (newOpen) => () => {
+  const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
 

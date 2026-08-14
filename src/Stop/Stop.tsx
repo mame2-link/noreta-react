@@ -12,8 +12,8 @@ import { StopName } from "./StopName";
 // import { BusStopSchema } from "./BusStopSchema";
 import { StopTimes } from "./StopTimes";
 import { HideHomeHeader } from "../Common/HideHomeHeader";
-// import { addStopId } from "../Common/IndexedDb";
 import { CommonFooter } from "../Common/CommonFooter";
+// import { addStopId } from "../Common/IndexedDb";
 
 
 export default function Stop() {
@@ -37,8 +37,8 @@ export default function Stop() {
       setStop(value.data);
     };
     fetchData();
-    //   // // indexedDB
-    //   // addStopId(stopId).catch((e) => console.error(e));
+    // indexedDB
+    // addStopId(stopId!).catch((e) => console.error(e));
   }, []);
 
   return (

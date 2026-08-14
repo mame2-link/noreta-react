@@ -49,7 +49,7 @@ export function hhmm(hhmmss: string) {
  * @param {string} hhmmss
  * @returns {number} 00:00:00 からの経過秒
  */
-export function spentSec(hhmmss: string) {
+export function spentSec(hhmmss: string): number {
   const strs = hhmmss.split(":");
   return parseInt(strs[0]) * 3600 + parseInt(strs[1]) * 60 + parseInt(strs[2]);
 }
@@ -60,7 +60,7 @@ export function spentSec(hhmmss: string) {
  * @param {string} hhmmss2 hh:mm:ss
  * @returns {number} diff seconds hhmmss1 hhmmss2
  */
-export function diffSec(hhmmss1: string, hhmmss2: string) {
+export function diffSec(hhmmss1: string, hhmmss2: string): number {
   const str1 = hhmmss1.split(":");
   const num1 =
     parseInt(str1[0]) * 3600 + parseInt(str1[1]) * 60 + parseInt(str1[2]);
@@ -76,7 +76,7 @@ export function diffSec(hhmmss1: string, hhmmss2: string) {
  * @param {string} departureTime
  * @returns {Number} delay sec
  */
-export function delaySec(timestamp: number, departureTime: string) {
+export function delaySec(timestamp: number, departureTime: string): number {
   return timestamp - (ts0 + spentSec(departureTime));
 }
 
@@ -86,19 +86,19 @@ export function delaySec(timestamp: number, departureTime: string) {
  * @param {string} departureTime
  * @returns {Number} delay min
  */
-export function delayMin(timestamp, departureTime) {
+export function delayMin(timestamp: number, departureTime: string): number {
   return Math.floor(delaySec(timestamp, departureTime) / 60);
 }
 
-const OFFSET = 200;
+// const OFFSET = 200;
 /**
  * Scroll To Anchor
  * @param {Number} offset
  */
-export function scrollToAnchor(offset = OFFSET) {
+export function scrollToAnchor(/*offset = OFFSET*/) {
   if (!document.getElementById("anchor")) return;
   const top =
-    document.getElementById("anchor").getBoundingClientRect().top +
+    document.getElementById("anchor")!.getBoundingClientRect().top +
     window.scrollY;
   window.scrollTo({
     top: top,
@@ -149,7 +149,7 @@ export function getTimeString(/*timezone = "Asia/Tokyo"*/) {
  * @param {string} timeStr
  * @returns {string} hh:mm:59
  */
-export function departureTimeMargin(timeStr) {
+export function departureTimeMargin(timeStr: string) {
   return timeStr.slice(0, -2) + "59";
 }
 
@@ -163,20 +163,19 @@ export function getStopTimesAnchorIndex(stopTimes: StopTime[]): number {
   if (len === 0) return 0;
   const jst = getTimeString();
   const t = jst.slice(0, -2) + "00"; // seconds floor
-  if (stopTimes[len - 1].departure_time <= t) return len;
+  if (stopTimes[len - 1].departure_time! <= t) return len;
   let left = 0;
   let right = len;
   let index = Math.floor((left + right) / 2);
   while (right > left) {
     [right, left] =
-      t <= stopTimes[index].departure_time ? [index, left] : [right, index + 1];
+      t <= stopTimes[index].departure_time! ? [index, left] : [right, index + 1];
     index = Math.floor((left + right) / 2);
   }
   return index;
 }
 
-export function getSeqIndex(stopTimes: StopTime[], seq: number) {
-  console.log(stopTimes);
+export function getSeqIndex(stopTimes: StopTime[], seq: number): number | null {
   let idx = seq - 1;
   if (stopTimes[idx].stop_sequence === seq) {
     return idx; // ほとんどここで終わるはず
@@ -193,13 +192,14 @@ export function getSeqIndex(stopTimes: StopTime[], seq: number) {
     idx--;
     while (idx >= 0) {
       console.log("ここに来る idx--: " + idx);
-      if (stopTimes.at(idx).stop_sequence === seq) {
+      if (stopTimes[idx].stop_sequence === seq) {
         return idx;
       }
       idx--;
     }
   }
   console.error("sequence error!");
+  return null;
 }
 
 /**
@@ -207,14 +207,14 @@ export function getSeqIndex(stopTimes: StopTime[], seq: number) {
  * @param {*} stopTime
  * @returns
  */
-export function hasPastTimestamp(stopTime) {
-  if (!stopTime.hasOwnProperty("timestamp")) {
+export function hasPastTimestamp(stopTime: StopTime) {
+  if (!stopTime.timestamp) {
     return false;
   }
   if (stopTime.timestamp === null) {
     return false;
   }
-  if (Math.floor(Date.now() / 1000) - stopTime.timestamp >= 0) {
+  if (Math.floor(Date.now() / 1000) - stopTime.timestamp! >= 0) {
     return true;
   }
   return false;
@@ -225,21 +225,21 @@ export function hasPastTimestamp(stopTime) {
  * @param {*} stopTime
  * @returns
  */
-export function isDepartureProspects(stopTime) {
-  if (departureTimeMargin(stopTime.departure_time) >= getTimeString()) {
+export function isDepartureProspects(stopTime: StopTime) {
+  if (departureTimeMargin(stopTime.departure_time!) >= getTimeString()) {
     return true;
   }
   return false;
 }
 
 export const StoptimeStatus = Object.freeze({
-  passed: 1, // 通過済み
-  waiting: 2, // 通過待ち
-  unknown: 3, // バスロケなし
-  timeout: 4, // バスロケ有効期限切れ バスロケなしのタイムアウト 非表示対象
+  passed: "passed", // 通過済み
+  waiting: "waiting", // 通過待ち
+  unknown: "unknown", // バスロケなし
+  timeout: "timeout", // バスロケ有効期限切れ バスロケなしのタイムアウト 非表示対象
 });
 
-export function isVaildTimestamp(timestamp) {
+export function isVaildTimestamp(timestamp: number): boolean {
   // 900秒 15分
   if (Math.floor(Date.now() / 1000) - timestamp >= TIMEOUT_SEC) {
     return false;
@@ -247,7 +247,7 @@ export function isVaildTimestamp(timestamp) {
   return true;
 }
 
-export function isNoBuslocationTimeout(timeStr) {
+export function isNoBuslocationTimeout(timeStr: string) {
   if (spentSec(getTimeString()) - spentSec(timeStr) >= TIMEOUT_SEC) {
     return true;
   }
@@ -259,9 +259,9 @@ export function isNoBuslocationTimeout(timeStr) {
  * @param {*} str 全角数字
  * @returns 半角数字
  */
-export function toHalfWidth(strVal) {
+export function toHalfWidth(strVal: string): string {
   // 半角変換
-  var halfVal = strVal.replace(/[！-～]/g, function (tmpStr) {
+  const halfVal = strVal.replace(/[！-～]/g, function (tmpStr) {
     // 文字コードをシフト
     return String.fromCharCode(tmpStr.charCodeAt(0) - 0xfee0);
   });
@@ -274,6 +274,7 @@ export function toHalfWidth(strVal) {
       // .replace(/‘/g, "`")
       // .replace(/￥/g, "\\")
       // .replace(/〜/g, "~")
+      // eslint-disable-next-line no-irregular-whitespace
       .replace(/　/g, " ")
   );
 }
@@ -282,14 +283,14 @@ export function toHalfWidth(strVal) {
  *
  * @param {*} url
  */
-export function setLinkCanonical(url) {
+export function setLinkCanonical(url: string) {
   if (document.querySelector('link[rel="canonical"]') === null) {
     const link = document.createElement("link");
     link.setAttribute("rel", "canonical");
     link.setAttribute("href", url);
     document.head.appendChild(link);
   } else {
-    document.querySelector('link[rel="canonical"]').setAttribute("href", url);
+    document.querySelector('link[rel="canonical"]')!.setAttribute("href", url);
   }
 }
 
@@ -297,7 +298,7 @@ export function setLinkCanonical(url) {
  *
  * @param {*} title
  */
-export function setMetaOgTitle(title) {
+export function setMetaOgTitle(title: string) {
   if (document.querySelector('meta[property="og:title"]') === null) {
     const meta = document.createElement("meta");
     meta.setAttribute("property", "og:title");
@@ -305,7 +306,7 @@ export function setMetaOgTitle(title) {
     document.head.appendChild(meta);
   } else {
     document
-      .querySelector('meta[property="og:title"]')
+      .querySelector('meta[property="og:title"]')!
       .setAttribute("content", title);
   }
 }
@@ -320,7 +321,7 @@ export function setMetaRobotsNoindex() {
     document.head.appendChild(meta);
   } else {
     document
-      .querySelector('meta[name="robots"]')
+      .querySelector('meta[name="robots"]')!
       .setAttribute("content", "noindex");
   }
 }
@@ -332,10 +333,10 @@ export function setMetaRobotsNoindex() {
 export function LineIcon() {
   return (
     <img
-      src= "/images/LINE_Brand_icon.png"
-  alt = "Line Brand"
-  width = "20"
-  height = "20"
+      src="/images/LINE_Brand_icon.png"
+      alt="Line Brand"
+      width="20"
+      height="20"
     />
   );
 }
@@ -360,7 +361,7 @@ export function LineIcon() {
  * Google はウェブランキングにキーワードメタタグを使用しない
  * @param {*} keywords
  */
-export function setMetaKeywords(keywords) {
+export function setMetaKeywords(keywords: string) {
   if (document.querySelector('meta[name="keywords"]') === null) {
     const meta = document.createElement("meta");
     meta.setAttribute("name", "keywords");
@@ -368,7 +369,7 @@ export function setMetaKeywords(keywords) {
     document.head.appendChild(meta);
   } else {
     document
-      .querySelector('meta[name="keywords"]')
+      .querySelector('meta[name="keywords"]')!
       .setAttribute("content", "keywords");
   }
 }

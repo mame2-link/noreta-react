@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router";
+// import { useLocation } from "react-router";
 
 import { useInstantSearch, useSearchBox } from "react-instantsearch";
 
@@ -10,22 +10,23 @@ import Paper from "@mui/material/Paper";
 import SearchIcon from "@mui/icons-material/Search";
 import Stack from "@mui/material/Stack";
 
-import DOMPurify from 'dompurify';
+// import DOMPurify from 'dompurify';
+import { SearchBoxConnectorParams } from "instantsearch.js/es/connectors/search-box/connectSearchBox";
 
-export function CustomSearchBox(props) {
+export function CustomSearchBox(props: SearchBoxConnectorParams) {
   const { query, refine } = useSearchBox(props);
   const { status } = useInstantSearch();
   const [inputValue, setInputValue] = useState(query);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const isSearchStalled = status === "stalled";
 
-  const q = DOMPurify.sanitize(inputValue);
+  // const q = DOMPurify.sanitize(inputValue);
 
-  let title = "バス停検索";
-  if (q && q.length > 0) {
-    title = q + " - バス停検索";
-  }
+  // let title = "バス停検索";
+  // if (q && q.length > 0) {
+  //   title = q + " - バス停検索";
+  // }
   // document.title = title;
 
   // description
@@ -33,9 +34,9 @@ export function CustomSearchBox(props) {
   //   .querySelector('meta[name="description"]')
   //   .setAttribute("content", title);
 
-  const location = useLocation();
+  // const location = useLocation();
 
-  function setQuery(newQuery) {
+  function setQuery(newQuery: string) {
     setInputValue(newQuery);
 
     refine(newQuery);
@@ -88,18 +89,18 @@ export function CustomSearchBox(props) {
         >
           <InputBase
             sx={{ ml: 1, flex: 1 }}
-            ref={inputRef}
+            inputRef={inputRef}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
             placeholder="バス停名で検索"
             spellCheck={false}
-            maxLength={512}
             type="search"
             value={inputValue}
             onChange={(event) => {
               setQuery(event.currentTarget.value);
             }}
+            inputProps={{ maxLength: 512 }}
             autoFocus
           />
           <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">

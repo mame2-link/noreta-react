@@ -35,7 +35,6 @@ export default function TripTimeline({ state }: { state: trip_state }) {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const seq = query.get("seq");
-  console.log(state);
   const stopTimes = state.stop_times;
   const stops = state.stops;
   const trip = state.trip;
@@ -52,22 +51,22 @@ export default function TripTimeline({ state }: { state: trip_state }) {
   if (route_short_name) title += "(" + route_short_name + ")";
   let headsign = "";
   let s2 = null;
-  for (const i in stopTimes) {
+  for (let i = 0; i < stopTimes.length; i++) {
     if (stopTimes[i].stop_sequence === Number(seq)) {
-      headsign = stopTimes[i].stop_headsign;
+      headsign = stopTimes[i].stop_headsign!;
       // const canonical_url =
       //   "https://t2.mame2.link/stop/" + stopTimes[i].stop_id;
       // setLinkCanonical(canonical_url);
       if (i > 0) {
         const s = stopMap.get(stopTimes[i].stop_id);
-        s2 = hhmm(stopTimes[i].departure_time) + " " + s.stop_name;
+        s2 = hhmm(stopTimes[i].departure_time!) + " " + s.stop_name;
         if (s.platform_code) s2 += " のりば" + s.platform_code;
       }
       break;
     }
   }
-  if (!headsign || headsign.length < 1) headsign = trip.trip_headsign;
-  title += " " + headsign + " " + hhmm(stopTimes[0].departure_time);
+  if (!headsign || headsign.length < 1) headsign = trip.trip_headsign!;
+  title += " " + headsign + " " + hhmm(stopTimes[0].departure_time!);
   const s = stopMap.get(stopTimes[0].stop_id);
 
   let stopName = s.stop_name;
@@ -106,7 +105,7 @@ export default function TripTimeline({ state }: { state: trip_state }) {
     let tColor = "text.primary";
     let delay_str = "";
     if (timestamp) {
-      let delay_min = delayMin(stopTime.timestamp, stopTime.departure_time);
+      let delay_min = delayMin(stopTime.timestamp!, stopTime.departure_time!);
       if (delay_min < 0) delay_min = 0;
       if (delay_min === 0) delay_str = "定刻";
       else {
@@ -120,11 +119,11 @@ export default function TripTimeline({ state }: { state: trip_state }) {
     if (stop.platform_code) sName += " " + stop.platform_code;
     const dTStr =
       new Date(
-        (timestamp0 + spentSec(stopTime.departure_time) + HOUR9SEC) * 1000
+        (timestamp0 + spentSec(stopTime.departure_time!) + HOUR9SEC) * 1000
       )
         .toISOString()
         .slice(0, -1) + "+09:00";
-    const departure_time = hhmm(stopTime.departure_time);
+    const departure_time = hhmm(stopTime.departure_time!);
     list.push(
       <TimelineItem key={stopTime.stop_sequence}>
         <TimelineOppositeContent>

@@ -1,7 +1,10 @@
 import SvgIcon from "@mui/material/SvgIcon";
 
-export function Logo1Icon(props) {
-  const fontSize = props.fontSize ?? "medium";
+export function Logo1Icon({
+  fontSize = "medium",
+}: {
+  fontSize?: "small" | "medium" | "large" | "inherit";
+}) {
   return (
     <SvgIcon fontSize={fontSize}>
       <svg

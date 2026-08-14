@@ -2,8 +2,7 @@ import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import { DIFF_SEC_MAX } from "../Common/CommonFunc";
 
-export function DelayAlert(props) {
-  const delays = props.delays;
+export function DelayAlert({ delays }: { delays: number[] }) {
   if (!delays) return;
   if (!Array.isArray(delays)) return;
   if (delays.length === 0) return;
@@ -11,7 +10,7 @@ export function DelayAlert(props) {
   if (delayMax === 0) return; // No Alert
   const delayMin = delays.reduce((a, b) => Math.min(a, b), Infinity);
   // severity
-  let severity = "info";
+  let severity: "success" | "info" | "warning" | "error" = "info";
   if (delayMax > 4) severity = "warning";
   if (delayMax > 9) severity = "error";
 

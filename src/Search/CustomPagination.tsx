@@ -1,4 +1,3 @@
-import React from "react";
 import { usePagination } from "react-instantsearch";
 import Pagination from "@mui/material/Pagination";
 // import PaginationItem from "@mui/material/PaginationItem";
@@ -7,7 +6,7 @@ import Pagination from "@mui/material/Pagination";
 // import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 // import { Button, IconButton } from "@mui/material";
 
-export function CustomPagination(props) {
+export function CustomPagination(props: any) {
   const {
     // pages,
     currentRefinement,
@@ -22,7 +21,7 @@ export function CustomPagination(props) {
   // const nextPageIndex = currentRefinement + 1;
   // const lastPageIndex = nbPages - 1;
 
-  const handleChange = (event, value) => {
+  const handleChange = (event: React.ChangeEvent<unknown, Element>, value: number) => {
     if (isModifierClick(event)) {
       return;
     }
@@ -103,14 +102,14 @@ export function CustomPagination(props) {
 //   );
 // }
 
-function isModifierClick(event) {
+function isModifierClick(event: any ) {
   const isMiddleClick = event.button === 1;
 
   return Boolean(
     isMiddleClick ||
-      event.altKey ||
-      event.ctrlKey ||
-      event.metaKey ||
-      event.shiftKey
+    event.altKey ||
+    event.ctrlKey ||
+    event.metaKey ||
+    event.shiftKey
   );
 }

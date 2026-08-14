@@ -5,7 +5,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Link from "@mui/material/Link";
 import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 // import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -29,8 +29,8 @@ export function Intervals({ stopTimes }: { stopTimes: StopTime[] }) {
   const lastIndex = stopTimes.length - 1;
   if (lastIndex < 1) return;
   const s = diffSec(
-    stopTimes[lastIndex].departure_time,
-    stopTimes[0].departure_time
+    stopTimes[lastIndex].departure_time!,
+    stopTimes[0].departure_time!
   );
   // const h = Math.floor(s / 3600);
   // const r = s % 3600;
@@ -47,7 +47,7 @@ export function Intervals({ stopTimes }: { stopTimes: StopTime[] }) {
     // const href = `${location.pathname}?page=${idx}`;
     stopTimeList.push(
       <MenuItem key={idx} value={idx}>
-        {hhmm(stopTimes[idx]["departure_time"])}
+        {hhmm(stopTimes[idx].departure_time!)}
       </MenuItem>
     );
   }
@@ -75,8 +75,8 @@ export function Intervals({ stopTimes }: { stopTimes: StopTime[] }) {
     scrollToTop();
   }
 
-  const handleOnChange = (e) => {
-    const page = e.target.value;
+  const handleOnChange = (e: SelectChangeEvent<string | number>) => {
+    const page = String(e.target.value ?? "0");
     const s_url = `${location.pathname}?page=${page}`;
     navigate(s_url);
     scrollToTop();
@@ -88,7 +88,7 @@ export function Intervals({ stopTimes }: { stopTimes: StopTime[] }) {
         <FormControl fullWidth>
           <InputLabel id="departure_time_label">発車時刻</InputLabel>
           <Select
-            value={pageStr}
+            value={pageStr!}
             labelId="departure_time_label"
             label="発車時刻"
             autoWidth
@@ -106,13 +106,13 @@ export function Intervals({ stopTimes }: { stopTimes: StopTime[] }) {
                 始発
               </TableCell>
               <TableCell>
-                <Link component="button" onClick={handleFirst}>{hhmm(stopTimes[0].departure_time)}</Link>
+                <Link component="button" onClick={handleFirst}>{hhmm(stopTimes[0].departure_time!)}</Link>
               </TableCell>
               <TableCell component="th" scope="row">
                 最終
               </TableCell>
               <TableCell>
-                <Link component="button" onClick={handleLast}>{hhmm(stopTimes[lastIndex].departure_time)}</Link>
+                <Link component="button" onClick={handleLast}>{hhmm(stopTimes[lastIndex].departure_time!)}</Link>
               </TableCell>
             </TableRow>
             <TableRow>

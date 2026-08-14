@@ -1,7 +1,6 @@
 import Box from "@mui/material/Box";
 
-export function VehicleNumber(props) {
-  const vehicle_number = props.vehicle_number;
+export function VehicleNumber({ vehicle_number }: { vehicle_number: string }) {
   return (
     <Box
       sx={{

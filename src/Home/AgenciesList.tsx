@@ -5,7 +5,7 @@ import Stack from "@mui/material/Stack";
 import { agencies } from "../Common/Agencies";
 
 export function AgenciesList() {
-  const list = [];
+  const list: JSX.Element[] = [];
   agencies.forEach((agency) => {
     list.push(
       <Button

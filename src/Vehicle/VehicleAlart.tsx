@@ -1,10 +1,9 @@
 
-import Alert from "@mui/material/Alert";
+import Alert, { type AlertColor } from "@mui/material/Alert";
 
-export function VehicleAlart(props) {
-    const past_min = props.past_min;
+export function VehicleAlart({ past_min }: { past_min: number }) {
 
-    let severity = "info";
+    let severity: AlertColor = "info";
     if (past_min > 4) {
         severity = "warning";
     }

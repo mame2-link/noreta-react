@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { /*useLocation,*/ useNavigate } from "react-router";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 
@@ -26,16 +26,16 @@ export default function VehicleSearch() {
   //   .querySelector('meta[name="description"]')
   //   .setAttribute("content", "車番検索");
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     const vehicle_id = agencyId + "-" + vehicleId;
     navigate("/vehicle/" + vehicle_id);
   };
 
-  const handleInput = (event) => {
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVehicleId(event.currentTarget.value);
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: SelectChangeEvent) => {
     setAgencyId(event.target.value);
   };
   const menuItem = [];
@@ -48,7 +48,7 @@ export default function VehicleSearch() {
     );
   }
 
-  const location = useLocation();
+  // const location = useLocation();
 
   useEffect(() => {
     // GA4

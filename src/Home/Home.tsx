@@ -1,39 +1,36 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Schema } from "../../amplify/data/resource";
 
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
-// import { DefaultSearchBox } from "./DefaultSearchBox";
 import { HomeFooter } from "./HomeFooter";
 import { AgenciesList } from "./AgenciesList";
 
-// import { getStopsData } from "../Common/IndexedDb";
+import { getStopsData } from "../Common/IndexedDb";
 
-// import { RecentlyAccessStops } from "./RecentlyAccessStops";
+import { RecentlyAccessStops } from "./RecentlyAccessStops";
 import { SearchButtons } from "./SearchButtons";
 
+
 function Home() {
-  // aws-amplify/analitycs
-  // record({
-  //   name: "homeVisit",
-  // });
 
   // title
   const title = "バス運行情報 - t2.mame2.link";
   // window.title = title;
 
-  // const [stops, setStops] = useState();
+  const [stops, setStops] = useState<Schema["Stop"]["type"][]>();
 
   // const location = useLocation();
 
   useEffect(() => {
-    // getStopsData()
-    //   .then((value) => {
-    //     setStops(value);
-    //   })
-    //   .catch((e) => console.error(e));
+    getStopsData()
+      .then((value) => {
+        setStops(value as Schema["Stop"]["type"][]);
+      })
+      .catch((e) => console.error(e));
 
     // GA4
     // window.gtag('js', new Date());
@@ -60,9 +57,6 @@ function Home() {
           <AgenciesList />
           <SearchButtons />
 
-          {/* <Box sx={{ m: 2 }}>
-            <DefaultSearchBox />
-          </Box> */}
         </Box>
 
         <Box sx={{ m: 2 }}>
@@ -71,7 +65,7 @@ function Home() {
           </Link>
         </Box>
       </Container>
-      {/* <Box sx={{ m: 2 }}>{stops && <RecentlyAccessStops stops={stops} />}</Box> */}
+      <Box sx={{ m: 2 }}>{stops && <RecentlyAccessStops stops={stops} />}</Box>
       <Box sx={{ my: 3 }}>
         <Container maxWidth="xs">
           <HomeFooter></HomeFooter>

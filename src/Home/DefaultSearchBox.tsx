@@ -8,7 +8,7 @@ import SearchIcon from "@mui/icons-material/Search";
 export function DefaultSearchBox() {
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const q = formData.get("q");
@@ -40,7 +40,7 @@ export function DefaultSearchBox() {
         autoCapitalize="off"
         placeholder="バス停名で検索"
         spellCheck={false}
-        maxLength={512}
+        inputProps={{ maxLength: 512 }}
         type="search"
         name="q"
         autoFocus

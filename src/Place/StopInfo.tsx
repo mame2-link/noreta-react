@@ -1,14 +1,12 @@
-import React from "react";
-
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
 import { HeadsignList } from "../Home/HeadsignList";
+import { Schema } from "../../amplify/data/resource";
 
-export function StopInfo(props) {
-  const stop = props.stop;
+export function StopInfo({ stop }: { stop: Schema["Stop"]["type"] }) {
   const stopUrl = "/stop/" + stop.stop_id;
   let stopName = stop.stop_name;
   if (stop.platform_code && stop.platform_code.length > 0) {
@@ -28,10 +26,10 @@ export function StopInfo(props) {
         </Link>
         <Typography>{stop.stop_kana}</Typography>
       </Box>
-      <meta itemProp="name" content={stop.stop_name} />
-      <meta itemProp="latitude" content={stop.stop_lat} />
-      <meta itemProp="longitude" content={stop.stop_lon} />
-      <HeadsignList headsign={stop.headsigns} />
+      <meta itemProp="name" content={stop.stop_name!} />
+      <meta itemProp="latitude" content={String(stop.stop_lat)} />
+      <meta itemProp="longitude" content={String(stop.stop_lon)} />
+      {stop.headsigns && <HeadsignList headsign={stop.headsigns as Schema["Headsign"]["type"][]} />}
     </Paper>
   );
 }

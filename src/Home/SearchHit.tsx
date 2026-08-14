@@ -4,13 +4,20 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
 import { HeadsignList } from "./HeadsignList";
+import { Hit } from "algoliasearch";
+import { Schema } from "../../amplify/data/resource";
 
-export function SearchHit(props) {
-  const hit = props.hit;
+export function SearchHit({ hit }: { hit: Hit, key: string }) {
+  // const hit = props.hit;
   const stopUrl = "/stop/" + hit.objectID;
-  let stopName = hit.stopName;
-  if (hit.platform_code && hit.platform_code.length > 0) {
-    stopName += " のりば " + hit.platform_code;
+  let stopName = String(hit.stopName);
+  
+  const platform_code = hit.platform_code as string ?? "";
+  const stopkana = String(hit.stopKana);
+  // const lat = String(hit._geoloc?.lat);
+  const headsigns = hit.headsigns as Schema["Headsign"]["type"][]
+  if (platform_code && platform_code.length > 0) {
+    stopName += " のりば " + platform_code;
   }
   return (
     <Paper
@@ -24,12 +31,12 @@ export function SearchHit(props) {
             {stopName}
           </Typography>
         </Link>
-        <Typography>{hit.stopKana}</Typography>
+        <Typography>{stopkana}</Typography>
       </Box>
-      <meta itemProp="name" content={hit.stopName} />
-      <meta itemProp="latitude" content={hit._geoloc.lat} />
-      <meta itemProp="longitude" content={hit._geoloc.lng} />
-      <HeadsignList headsign={hit.headsigns} />
+      <meta itemProp="name" content={stopName} />
+      {/* <meta itemProp="latitude" content={lat} />
+      <meta itemProp="longitude" content={hit._geoloc.lng} /> */}
+      <HeadsignList headsign={headsigns} />
     </Paper>
   );
 }

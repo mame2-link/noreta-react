@@ -4,6 +4,6 @@ import { StopTime } from "./stop_time";
 export type trip_state = {
     trip: Schema["Trip"]["type"],
     stop_times: StopTime[],
-    stops: Array<Schema["Stop"]["type"]>,
+    stops: Schema["Stop"]["type"][],
     route: Schema["Route"]["type"]
 }

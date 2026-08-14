@@ -22,23 +22,26 @@ import {
 import { agencies } from "../Common/Agencies";
 import { ExtraBus } from "../Common/ExtraBus";
 import { VehicleNumber } from "../Common/VehicleNumber";
+import { StopTimesState } from "../lib/stop_times_state";
 
-export function CardList(props) {
-  const stopTimes = props.states.stop_times;
-  const tripMap = props.states.tripMap;
-  const routeMap = props.states.routeMap;
+export function CardList({ states }: { states: StopTimesState }) {
+  const stopTimes = states.stop_times;
+  const tripMap = states.tripMap;
+  const routeMap = states.routeMap;
   // const uncertain = props.uncertain === true ? true : false;
   const cards = [];
   const timestamp0 = initBaseTimestamp(); // 遅れを計算する前に実行
   const now_str = getTimeString();
-  let o = 10;
+  // let o = 10;
   for (const stopTime of stopTimes) {
     const trip = tripMap.get(stopTime.trip_id);
-    const route = routeMap.get(trip.route_id);
-    const departureTime = hhmm(stopTime.departure_time); // 表示用
+    if (!trip) continue;
+    const route = routeMap.get(trip.route_id!);
+    if (!route) continue;
+    const departureTime = hhmm(stopTime.departure_time!); // 表示用
     const departure_time = stopTime.departure_time; // 計算用
     const datetimeStr =
-      new Date((timestamp0 + spentSec(departure_time) + HOUR9SEC) * 1000)
+      new Date((timestamp0 + spentSec(departure_time!) + HOUR9SEC) * 1000)
         .toISOString()
         .slice(0, -1) + "+09:00";
     const stop_sequence = stopTime.stop_sequence;
@@ -56,7 +59,7 @@ export function CardList(props) {
     let tColor = "text.primary";
     const timestamp = stopTime.timestamp;
     if (hasPastTimestamp(stopTime)) {
-      let delay_min = delayMin(timestamp, departure_time);
+      let delay_min = delayMin(timestamp!, departure_time!);
       if (delay_min < 0) delay_min = 0;
       if (delay_min === 0) delay_str = "定刻発車";
 
@@ -72,7 +75,7 @@ export function CardList(props) {
     // 遅れ上書き
     if (stopTime.delayMin !== undefined) {
       let waitMin = Math.round(
-        (spentSec(departure_time) +
+        (spentSec(departure_time!) +
           Number(stopTime.delayMin) * 60 -
           spentSec(now_str)) /
         60
@@ -109,10 +112,10 @@ export function CardList(props) {
       vehicle_num = trip.vehicle_id.slice(n);
     }
 
-    o--;
+    // o--;
 
     cards.push(
-      <Card key={stopTime.trip_id} sx={{ bgcolor: "grey.200" }} order={{ o }}>
+      <Card key={stopTime.trip_id} sx={{ bgcolor: "grey.200" }}> {/* order={{ o }}*/}
         <CardActionArea>
           <Link color="inherit" underline="none" href={tripUrl}>
             <CardContent>

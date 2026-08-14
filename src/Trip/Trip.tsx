@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router";
 
+import { Schema } from "../../amplify/data/resource";
+
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
@@ -19,11 +21,13 @@ import TripTimeline from "./TripTimeline";
 import { toHalfWidth, setMetaRobotsNoindex } from "../Common/CommonFunc";
 import { VehicleNumber } from "../Common/VehicleNumber";
 import { trip_state } from "../lib/trip_state";
+import { StopTime } from "../lib/stop_time";
+
 
 export default function Trip() {
   const { tripId } = useParams();
   const [states, setStates] = useState<trip_state>();
-  const [errorStatus, setErrorStatus] = useState(false);
+  const [errorStatus, setErrorStatus] = useState<boolean>(false);
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const seq = query.get("seq");
@@ -33,73 +37,81 @@ export default function Trip() {
   setMetaRobotsNoindex();
 
   function getStopById(stopId: string) {
-    if (!states?.stops) return null;
+    if (!states) return null;
     return states.stops.find(stop => stop.stop_id === stopId);
   }
-
-  async function fetchStopTimes(tripId: string) {
-
-    // trip
-    const trip = await getTrip(tripId);
-
-    // stop_times stops
-    const stopTimes = await queryStopTimesByTripId(tripId);
-    const ids = new Set();
-    for (const data of stopTimes) {
-      ids.add(data.stop_id);
-    }
-    const stops = await getBatchStops(Array.from(ids));
-
-    // route
-    const route = await getRoute(trip.route_id);
-
-    const states = {
-      trip: trip,
-      stop_times: stopTimes,
-      stops: stops,
-      route: route,
-    }
-    setStates(states);
-
-  }
-
-  // headsign
   let headsign = "";
-  if (states?.stop_times) {
-    const stopTime = states.stop_times.find(stop_time => stop_time.stop_sequence === Number(seq));
-    headsign = stopTime.stop_headsign;
-    stop = getStopById(stopTime.stop_id);
-  }
-  if (!headsign || headsign.length < 1) headsign = states?.trip?.trip_headsign;
-
   let vehicle_num = null;
   let vehicleUrl = null;
-  if (states?.route && states?.trip.vehicle_id) {
-    vehicleUrl =
-      "/vehicle/" + states.trip.vehicle_id + "?trip_id=" + tripId + "&seq=" + seq;
-    if (stop) {
-      vehicleUrl += "&stop_id=" + stop.stop_id;
+  if (states) {
+    if (states.stop_times) {
+      const stopTime = states.stop_times.find(
+        stop_time => stop_time.stop_sequence === Number(seq)
+      );
+      if (stopTime) {
+        headsign = stopTime.stop_headsign!;
+        stop = getStopById(stopTime.stop_id!);
+      }
     }
-    const n = states.route.agency_id.length + 1;
-    vehicle_num = states.trip.vehicle_id.slice(n);
+    if (!headsign || headsign.length < 1) headsign = states.trip.trip_headsign!;
+
+
+    if (states?.route && states?.trip.vehicle_id) {
+      vehicleUrl =
+        "/vehicle/" + states.trip.vehicle_id + "?trip_id=" + tripId + "&seq=" + seq;
+      if (stop) {
+        vehicleUrl += "&stop_id=" + stop.stop_id;
+      }
+      const n = states.route.agency_id.length + 1;
+      vehicle_num = states.trip.vehicle_id.slice(n);
+    }
   }
 
-  if (errorStatus) {
-    // let title = "本日は該当便がありません - 便ID: " + tripId + " " + seq;
-    // document.title = title;
-    // // description
-    // document
-    //   .querySelector('meta[name="description"]')
-    //   .setAttribute("content", title);
+  // if (errorStatus) {
+  // let title = "本日は該当便がありません - 便ID: " + tripId + " " + seq;
+  // document.title = title;
+  // // description
+  // document
+  //   .querySelector('meta[name="description"]')
+  //   .setAttribute("content", title);
 
-    // GA4
-    // window.gtag('js', new Date());
-    // window.gtag('event', 'exception', { 'description': 'trip error', 'fatal': false });
-    // window.gtag('config', 'G-L8YDJSX9JX');
-  }
+  // GA4
+  // window.gtag('js', new Date());
+  // window.gtag('event', 'exception', { 'description': 'trip error', 'fatal': false });
+  // window.gtag('config', 'G-L8YDJSX9JX');
+  // }
 
   useEffect(() => {
-    fetchStopTimes(tripId);
+    const fetchStopTimes = async () => {
+      // trip
+      const trip = await getTrip(tripId!);
+      if (!trip) {
+        setErrorStatus(true);
+        return;
+      }
+
+      // stop_times stops
+      const stopTimes = await queryStopTimesByTripId(trip.trip_id) as StopTime[];
+      if (!stopTimes) return;
+      const ids = new Set<string>();
+      for (const data of stopTimes) {
+        if (!data?.stop_id) continue;
+        ids.add(data.stop_id);
+      }
+      const stops = await getBatchStops(Array.from(ids)) as Schema["Stop"]["type"][];
+
+      // route
+      const route = await getRoute(trip.route_id!) as Schema["Route"]["type"];
+
+      const states = {
+        trip: trip,
+        stop_times: stopTimes,
+        stops: stops,
+        route: route,
+      }
+      setStates(states);
+    };
+    fetchStopTimes();
   }, []);
 
   return (

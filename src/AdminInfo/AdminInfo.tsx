@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router";
+// import { useLocation } from "react-router";
 
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
@@ -10,7 +10,7 @@ import { AgenciesList } from "../Home/AgenciesList";
 
 export default function AdminInfo() {
   // title
-  const title = "運営者情報 - t2.mame2.link";
+  // const title = "運営者情報 - t2.mame2.link";
   // document.title = title;
 
   // description
@@ -18,7 +18,7 @@ export default function AdminInfo() {
   //   .querySelector('meta[name="description"]')
   //   .setAttribute("content", title);
 
-  const location = useLocation();
+  // const location = useLocation();
 
   useEffect(() => {
     // GA4

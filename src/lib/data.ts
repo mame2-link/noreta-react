@@ -1,8 +1,8 @@
 import { Amplify } from "aws-amplify";
-import outputs from "../../amplify_outputs.json";
-
-import type { Schema } from '../../amplify/data/resource';
 import { generateClient } from 'aws-amplify/data';
+import outputs from "../../amplify_outputs.json";
+import type { Schema } from '../../amplify/data/resource';
+import { StopTime } from "./stop_time";
 
 Amplify.configure(outputs);
 
@@ -14,7 +14,11 @@ export async function getStop(stopId: string) {
 
 export async function getBatchStops(ids: string[]) {
     const { data: stops, errors } = await client.queries.getBatchStops({ ids: ids });
-    return stops;
+    if (!errors) {
+        return stops as Schema["Stop"]["type"][];
+    }
+    console.error(errors);
+    return null;
 }
 
 export async function queryStopTimesByStopIdIndex(stopId: string) {
@@ -40,9 +44,13 @@ export async function queryStopTimesByStopIdIndex(stopId: string) {
     return st;
 }
 
-export async function queryStopTimesByTripId(trip_id: string) {
-    const { data: stopTimes, errors } = await client.queries.queryStopTimesByTripId({ trip_id: trip_id });
-    return stopTimes!.items;
+export async function queryStopTimesByTripId(trip_id: string): Promise<StopTime[] | null> {
+    const { data: stop_times, errors } = await client.queries.queryStopTimesByTripId({ trip_id: trip_id });
+    if (!errors && stop_times) {
+        return stop_times.items as StopTime[];
+    }
+    console.error(errors);
+    return null;
 }
 
 export async function getTrip(id: string) {
@@ -55,13 +63,17 @@ export async function getTrip(id: string) {
 export async function getBatchTrips(ids: string[]) {
     const { data: trips, errors } = await client.queries.getBatchTrips({ ids: ids });
     if (!errors) {
-        return trips;
+        return trips as Schema["Trip"]["type"][];
     }
+    return null;
 }
 
-export async function getBatchRoutes(ids: string[]) {
+export async function getBatchRoutes(ids: string[]): Promise<Schema["Route"]["type"][] | null> {
     const { data: routes, errors } = await client.queries.getBatchRoutes({ ids: ids });
-    return routes;
+    if (!errors && routes) {
+        return routes as Schema["Route"]["type"][];
+    }
+    return null;
 }
 
 export async function getRoute(id: string) {
@@ -70,3 +82,15 @@ export async function getRoute(id: string) {
         return route;
     }
 };
+
+export async function getVehicle(id: string) {
+    const { data: vehicle, errors } = await client.queries.getVehicle({ vehicle_id: id });
+    if (!errors) {
+        return vehicle as Schema["Vehicle"]["type"];
+    }
+    return null;
+};
+
+export async function googleMapsSignUrl(noSignUrl: string) {
+    return await client.queries.googleMapsSignUrl({ path: noSignUrl });
+}

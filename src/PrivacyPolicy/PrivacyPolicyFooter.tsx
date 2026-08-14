@@ -24,7 +24,7 @@ export function PrivacyPolicyFooter() {
         <Link href="/terms" variant="body2">
           利用規約
         </Link>
-        <Box variant="body2">
+        <Box component="span" sx={{ typography: "body2" }}>
           {"© "}
           <Link href="/admn">mame2</Link> {new Date().getFullYear()}
           {"."}
