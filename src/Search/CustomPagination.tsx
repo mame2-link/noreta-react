@@ -1,4 +1,4 @@
-import { usePagination } from "react-instantsearch";
+import { usePagination, UsePaginationProps } from "react-instantsearch";
 import Pagination from "@mui/material/Pagination";
 // import PaginationItem from "@mui/material/PaginationItem";
 // import Link from "@mui/material/Link";
@@ -6,7 +6,7 @@ import Pagination from "@mui/material/Pagination";
 // import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 // import { Button, IconButton } from "@mui/material";
 
-export function CustomPagination(props: any) {
+export function CustomPagination(props: UsePaginationProps) {
   const {
     // pages,
     currentRefinement,
@@ -21,7 +21,7 @@ export function CustomPagination(props: any) {
   // const nextPageIndex = currentRefinement + 1;
   // const lastPageIndex = nbPages - 1;
 
-  const handleChange = (event: React.ChangeEvent<unknown, Element>, value: number) => {
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     if (isModifierClick(event)) {
       return;
     }
@@ -102,14 +102,15 @@ export function CustomPagination(props: any) {
 //   );
 // }
 
-function isModifierClick(event: any ) {
-  const isMiddleClick = event.button === 1;
+function isModifierClick(event: React.ChangeEvent<unknown>) {
+  const nativeEvent = event.nativeEvent as MouseEvent;
+  const isMiddleClick = nativeEvent.button === 1;
 
   return Boolean(
     isMiddleClick ||
-    event.altKey ||
-    event.ctrlKey ||
-    event.metaKey ||
-    event.shiftKey
+    nativeEvent.altKey ||
+    nativeEvent.ctrlKey ||
+    nativeEvent.metaKey ||
+    nativeEvent.shiftKey
   );
 }

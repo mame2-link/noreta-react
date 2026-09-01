@@ -13,7 +13,7 @@ import { StopName } from "./StopName";
 import { StopTimes } from "./StopTimes";
 import { HideHomeHeader } from "../Common/HideHomeHeader";
 import { CommonFooter } from "../Common/CommonFooter";
-// import { addStopId } from "../Common/IndexedDb";
+import { addStopId } from "../Common/IndexedDb";
 
 
 export default function Stop() {
@@ -38,7 +38,7 @@ export default function Stop() {
     };
     fetchData();
     // indexedDB
-    // addStopId(stopId!).catch((e) => console.error(e));
+    addStopId(stopId!).catch((e) => console.error(e));
   }, []);
 
   return (
