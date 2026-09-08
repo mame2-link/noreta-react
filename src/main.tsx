@@ -12,6 +12,7 @@ import Trip from "./Trip";
 import Search from "./Search";
 import Vehicle from "./Vehicle";
 import VehicleSearch from "./VehicleSearch";
+import Location from "./Location";
 import Place from "./Place";
 import AdminInfo from "./AdminInfo";
 import PrivacyPolicy from "./PrivacyPolicy";
@@ -56,6 +57,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="/search" element={<Search />} />
           <Route path="/vehicle_search" element={<VehicleSearch />} />
           <Route path="/place/:stopId" element={<Place />} />
+          <Route path="/location" element={<Location />} />
           <Route path="/admn" element={<AdminInfo />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />
