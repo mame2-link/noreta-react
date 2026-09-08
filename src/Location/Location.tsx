@@ -18,14 +18,16 @@ export default function Location() {
         }
     }, []);
 
+    console.log("lat = ", position?.latitude, " lon=", position?.longitude);
+
     return (
         <>
             <main>
-                {(!position?.latitude || !position.longitude) && (
+                {(position === undefined || !position?.latitude || !position.longitude) && (
                     <Box sx={{ m: 2 }}>位置情報が無効です</Box>
                 )}
-                {position?.latitude && position.longitude && (
-                    <LatLngSearch {...position} />
+                {position !== undefined && position.latitude && position.longitude && (
+                    <LatLngSearch position={position} />
                 )}
             </main>
             <Box sx={{ my: 2 }}>

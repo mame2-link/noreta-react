@@ -6,13 +6,13 @@ import Box from "@mui/material/Box";
 
 import { SearchHit } from "../Home/SearchHit";
 
-export function LatLngSearch(position: GeolocationCoordinates) {
+export function LatLngSearch({ position }: { position: GeolocationCoordinates }) {
     const [hits, setHits] = useState<BaseHit>();
     const appID = "4QC6DKEQDN";
     const apiKey = "266e2d468394f84445aeba796968f816";
     const indexName = "stops-index";
     const latlng = position.latitude + "," + position.longitude;
-    console.log(latlng);
+    console.log("latlng = ", latlng);
 
     const client = algoliasearch(appID, apiKey);
 
