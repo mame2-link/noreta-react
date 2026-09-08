@@ -18,8 +18,7 @@ import { SearchButtons } from "./SearchButtons";
 function Home() {
 
   // title
-  const title = "バス運行情報 - t2.mame2.link";
-  // window.title = title;
+  const title = "のれたネット - noreta.net";
 
   const [stops, setStops] = useState<Schema["Stop"]["type"][]>();
 
@@ -31,11 +30,6 @@ function Home() {
         setStops(value as Schema["Stop"]["type"][]);
       })
       .catch((e) => console.error(e));
-
-    // GA4
-    // window.gtag('js', new Date());
-    // window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search })
-    // window.gtag('config', 'G-L8YDJSX9JX');
   }, []);
 
   return (
