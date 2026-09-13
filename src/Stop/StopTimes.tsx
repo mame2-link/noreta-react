@@ -35,11 +35,6 @@ export function StopTimes({ stop, page }: { stop: Schema["Stop"]["type"], page: 
       setStopTimes(stop_times);
     };
     fetchData();
-    // if (page === null) {
-    //   console.log("polling!");
-    //   const intervalId = setInterval(fetchData, 30000);
-    //   return () => { console.log("clear Interval"); clearInterval(intervalId) };
-    // }
   }, []);
 
   const handleFetchData = async () => {

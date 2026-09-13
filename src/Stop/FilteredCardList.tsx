@@ -45,7 +45,7 @@ export function FilteredCardList({ stopTimes, idx }: { stopTimes: StopTime[], id
           const datas = await queryStopTimesByTripId(tripId);
           if (!datas) return;
           const m_idx = getSeqIndex(datas, seq);
-          if (!m_idx) return;
+          if (m_idx === null) return;
           // 当該バス停以降で到着確認がある
           let l_idx = m_idx! + 1;
           while (l_idx < datas.length) {
@@ -73,7 +73,7 @@ export function FilteredCardList({ stopTimes, idx }: { stopTimes: StopTime[], id
           const datas = await queryStopTimesByTripId(tripId);
           if (!datas) return;
           const m_idx = getSeqIndex(datas, seq);
-          if (!m_idx) return;
+          if (m_idx === null) return;
           let l_idx = m_idx - 1;
           while (l_idx >= 0) {
             if (datas[l_idx].timestamp) {
@@ -101,7 +101,6 @@ export function FilteredCardList({ stopTimes, idx }: { stopTimes: StopTime[], id
       for (const route of routes) {
         rMap.set(route.route_id, route);
       }
-      // setRouteMap(rMap);
 
       const states: StopTimesState = {
         tripMap: tMap,

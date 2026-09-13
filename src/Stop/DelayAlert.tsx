@@ -3,7 +3,7 @@ import Stack from "@mui/material/Stack";
 import { DIFF_SEC_MAX } from "../Common/CommonFunc";
 
 export function DelayAlert({ delays }: { delays: number[] }) {
-  if (!delays) return;
+  // if (!delays) return;
   if (!Array.isArray(delays)) return;
   if (delays.length === 0) return;
   const delayMax = delays.reduce((a, b) => Math.max(a, b), -Infinity);

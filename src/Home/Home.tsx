@@ -22,8 +22,6 @@ function Home() {
 
   const [stops, setStops] = useState<Schema["Stop"]["type"][]>();
 
-  // const location = useLocation();
-
   useEffect(() => {
     getStopsData()
       .then((value) => {
