@@ -33,6 +33,8 @@ function Home() {
   return (
     <>
       <title>{title}</title>
+      <meta property="og:title" content={title} />
+      <meta name="description" content="都営バス 川崎市バス 京成バス千葉ウエスト株式会社 塩浜営業所 （旧 京成トランジットバス）の時刻表" />
       <Container component="main" maxWidth="xs">
         <Box
           sx={{

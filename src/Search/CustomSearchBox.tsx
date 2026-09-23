@@ -38,6 +38,7 @@ export function CustomSearchBox(props: SearchBoxConnectorParams) {
 
   function setQuery(newQuery: string) {
     setInputValue(newQuery);
+    console.log("search", newQuery);
 
     refine(newQuery);
 
