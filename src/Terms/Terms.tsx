@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-// import { useLocation } from "react-router";
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -7,26 +6,21 @@ import Typography from "@mui/material/Typography";
 import { CommonFooter } from "../Common/CommonFooter";
 
 export default function Terms() {
+
   // title
-  // const title = "利用規約 - t2.mame2.link";
-  // document.title = title;
-
-  // description
-  // document
-  //   .querySelector('meta[name="description"]')
-  //   .setAttribute("content", title);
-
-  // const location = useLocation();
+  const title = "利用規約 - noreta.net";
 
   useEffect(() => {
     // GA4
-    // window.gtag('js', new Date());
-    // window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search })
-    // window.gtag('config', 'G-L8YDJSX9JX');
+    window.gtag('js', new Date());
+    window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search });
   }, []);
 
   return (
     <>
+      <title>{title}</title>
+      <meta property="og:title" content={title} />
+      <meta name="description" content={title} />
       <main>
         <Typography component="h1" variant="h5" sx={{ m: 2 }}>
           利用規約

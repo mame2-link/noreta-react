@@ -63,7 +63,7 @@ export function HideHomeHeader({ stop }: { stop: Schema["Stop"]["type"] }) {
 
   const searchUrl = "/search";
 
-  const lineTargetUrl = "https://t2.mame2.link" + location.pathname; // + location.search;
+  const lineTargetUrl = "https://noreta.net" + location.pathname; // + location.search;
   const sendByLineUrl =
     "https://line.me/R/msg/text/?" + encodeURIComponent(lineTargetUrl);
 

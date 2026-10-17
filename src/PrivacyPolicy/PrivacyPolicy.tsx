@@ -8,11 +8,9 @@ import { PrivacyPolicyFooter } from "./PrivacyPolicyFooter";
 
 export default function PrivacyPolicy() {
   // title
-  // const title = "プライバシーポリシー";
-  // document.title = title;
+  const title = "プライバシーポリシー - noreta.net";
 
-  // const description =
-  //   "このサイト、サービスのプライバシーポリシーについて記述します";
+  const description = "このサイト、サービスのプライバシーポリシーについて記述します";
   // description
   // document
   //   .querySelector('meta[name="description"]')
@@ -22,13 +20,16 @@ export default function PrivacyPolicy() {
 
   useEffect(() => {
     // GA4
-    // window.gtag('js', new Date());
-    // window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search })
+    window.gtag('js', new Date());
+    window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search })
     // window.gtag('config', 'G-L8YDJSX9JX');
   }, []);
 
   return (
     <>
+      <title>{title}</title>
+      <meta property="og:title" content={title} />
+      <meta name="description" content={description} />
       <main>
         <Typography component="h1" variant="h5" sx={{ m: 2 }}>
           プライバシーポリシー

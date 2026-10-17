@@ -13,7 +13,7 @@ export function StopNavi(props) {
   const stop = props.stop;
   const location = useLocation();
   const lineTargetUrl =
-    "https://t2.mame2.link" + location.pathname + location.search;
+    "https://noreta.net" + location.pathname + location.search;
   const sendByLineUrl =
     "https://line.me/R/msg/text/?" + encodeURIComponent(lineTargetUrl);
   const latlng = stop.stop_lat + "," + stop.stop_lon;
@@ -39,7 +39,7 @@ export function StopNavi(props) {
   }
 
   const placeUrl = "/place/" + stop.stop_id;
-  // const targetUrl = "https://t2.mame2.link/stop/" + stop.stop_id;
+  // const targetUrl = "https://noreta.net/stop/" + stop.stop_id;
 
   return (
     <Stack

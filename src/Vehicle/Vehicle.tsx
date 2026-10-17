@@ -55,7 +55,7 @@ export default function Vehicle() {
       const center =
         vehicle.latitude + "," + vehicle.longitude;
       const markers =
-        "&markers=anchor:bottom%7Cicon:https://t2.mame2.link/marker.png%7C" +
+        "&markers=anchor:bottom%7Cicon:https://noreta.net/marker.png%7C" +
         center;
       const noSignUrl =
         "https://maps.googleapis.com/maps/api/staticmap?center=" +
@@ -96,7 +96,7 @@ export default function Vehicle() {
       // document
       //   .querySelector('meta[name="description"]')
       //   .setAttribute("content", description);
-      // const canonical_url = "https://t2.mame2.link/vehicle/" + vehicleId;
+      // const canonical_url = "https://noreta.net/vehicle/" + vehicleId;
       // setLinkCanonical(canonical_url);
 
       // stop
@@ -161,7 +161,7 @@ export default function Vehicle() {
 
   return (
     <>
-      {stop && trip_id && seq &&(
+      {stop && trip_id && seq && (
         <HideTripBackHeader
           trip_id={trip_id}
           seq={seq}

@@ -77,7 +77,7 @@ export function HideTripBackHeader({ trip_id, seq, stop }: { trip_id: string, se
   const placeUrl = "/place/" + stop?.stop_id;
   const searchUrl = "/search";
   const lineTargetUrl =
-    "https://t2.mame2.link" + location.pathname + location.search;
+    "https://noreta.net" + location.pathname + location.search;
   const sendByLineUrl =
     "https://line.me/R/msg/text/?" + encodeURIComponent(lineTargetUrl);
 

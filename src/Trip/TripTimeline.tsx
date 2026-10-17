@@ -55,7 +55,7 @@ export default function TripTimeline({ state }: { state: trip_state }) {
     if (stopTimes[i].stop_sequence === Number(seq)) {
       headsign = stopTimes[i].stop_headsign!;
       // const canonical_url =
-      //   "https://t2.mame2.link/stop/" + stopTimes[i].stop_id;
+      //   "https://noreta.net/stop/" + stopTimes[i].stop_id;
       // setLinkCanonical(canonical_url);
       if (i > 0) {
         const s = stopMap.get(stopTimes[i].stop_id);
@@ -176,14 +176,17 @@ export default function TripTimeline({ state }: { state: trip_state }) {
   // window.gtag('config', 'G-L8YDJSX9JX');
 
   return (
-    <Timeline
-      sx={{
-        [`& .${timelineOppositeContentClasses.root}`]: {
-          flex: 0.2,
-        },
-      }}
-    >
-      {list}
-    </Timeline>
+    <>
+      <title>{title}</title>
+      <Timeline
+        sx={{
+          [`& .${timelineOppositeContentClasses.root}`]: {
+            flex: 0.2,
+          },
+        }}
+      >
+        {list}
+      </Timeline>
+    </>
   );
 }

@@ -72,7 +72,7 @@ export function HideBackHeader({ stop }: { stop: Schema["Stop"]["type"] }) {
   const stopUrl = "/stop/" + stop.stop_id;
   const searchUrl = "/search";
   const lineTargetUrl =
-    "https://t2.mame2.link" + location.pathname + location.search;
+    "https://noreta.net" + location.pathname + location.search;
   const sendByLineUrl =
     "https://line.me/R/msg/text/?" + encodeURIComponent(lineTargetUrl);
 

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router";
 
 import type { Schema } from "../../amplify/data/resource";
 
@@ -18,11 +17,6 @@ import { getStopTimesAnchorIndex } from "../Common/CommonFunc";
 export function StopTimes({ stop, page }: { stop: Schema["Stop"]["type"], page: number | null }) {
 
   const [stopTimes, setStopTimes] = useState<StopTime[]>();
-
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const pageStr = queryParams.get("page");
-  page = pageStr === null ? null : parseInt(pageStr);
 
   let idx = null;
   if (stopTimes) {

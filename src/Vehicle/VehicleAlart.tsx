@@ -1,4 +1,3 @@
-
 import Alert, { type AlertColor } from "@mui/material/Alert";
 
 export function VehicleAlart({ past_min }: { past_min: number }) {

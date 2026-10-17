@@ -10,8 +10,7 @@ import { AgenciesList } from "../Home/AgenciesList";
 
 export default function AdminInfo() {
   // title
-  // const title = "運営者情報 - t2.mame2.link";
-  // document.title = title;
+  const title = "運営者情報 - noreta.net";
 
   // description
   // document
@@ -29,6 +28,7 @@ export default function AdminInfo() {
 
   return (
     <>
+      <title>{title}</title>
       <main>
         <Typography component="h1" variant="h5" sx={{ m: 2 }}>
           運営者情報

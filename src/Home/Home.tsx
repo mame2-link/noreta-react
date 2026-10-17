@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Schema } from "../../amplify/data/resource";
 
+import { useLocation } from "react-router";
+
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
@@ -22,13 +24,19 @@ function Home() {
 
   const [stops, setStops] = useState<Schema["Stop"]["type"][]>();
 
+  const location = useLocation();
+
   useEffect(() => {
+    console.log("--- Home useEffect ---");
     getStopsData()
       .then((value) => {
         setStops(value as Schema["Stop"]["type"][]);
       })
       .catch((e) => console.error(e));
   }, []);
+
+  window.gtag('js', new Date());
+  window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search });
 
   return (
     <>

@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 
 export default function NotFound() {
   // title
-  // const title = "404 ページがありません🥹 - t2.mame2.link";
+  const title = "404 ページがありません🥹 - noreta.net";
   // document.title = title;
 
   // description
@@ -24,6 +24,7 @@ export default function NotFound() {
 
   return (
     <>
+      <title>{title}</title>
       <main>
         <Typography sx={{ m: 1 }}>404 ページがありません🥹</Typography>
         <Link href="/" sx={{ m: 1 }}>

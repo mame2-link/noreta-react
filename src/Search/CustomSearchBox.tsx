@@ -10,7 +10,7 @@ import Paper from "@mui/material/Paper";
 import SearchIcon from "@mui/icons-material/Search";
 import Stack from "@mui/material/Stack";
 
-// import DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
 import { SearchBoxConnectorParams } from "instantsearch.js/es/connectors/search-box/connectSearchBox";
 
 export function CustomSearchBox(props: SearchBoxConnectorParams) {
@@ -21,13 +21,12 @@ export function CustomSearchBox(props: SearchBoxConnectorParams) {
 
   const isSearchStalled = status === "stalled";
 
-  // const q = DOMPurify.sanitize(inputValue);
+  const q = DOMPurify.sanitize(inputValue);
 
-  // let title = "バス停検索";
-  // if (q && q.length > 0) {
-  //   title = q + " - バス停検索";
-  // }
-  // document.title = title;
+  let title = "バス停検索";
+  if (q && q.length > 0) {
+    title = q + " - バス停検索";
+  }
 
   // description
   // document
@@ -38,7 +37,7 @@ export function CustomSearchBox(props: SearchBoxConnectorParams) {
 
   function setQuery(newQuery: string) {
     setInputValue(newQuery);
-    console.log("search", newQuery);
+    // console.log("search", newQuery);
 
     refine(newQuery);
 
@@ -50,14 +49,13 @@ export function CustomSearchBox(props: SearchBoxConnectorParams) {
 
   useEffect(() => {
     // GA4
-    // window.gtag('js', new Date());
-    // window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search })
-    // window.gtag('config', 'G-L8YDJSX9JX');
+    window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search })
   }, []);
 
 
   return (
     <Box sx={{ width: "100%" }}>
+      <title>{title}</title>
       <Stack spacing={2}>
         <Paper
           component="form"
