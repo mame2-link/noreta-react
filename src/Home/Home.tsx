@@ -27,15 +27,14 @@ function Home() {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("--- Home useEffect ---");
     getStopsData()
       .then((value) => {
         setStops(value as Schema["Stop"]["type"][]);
       })
       .catch((e) => console.error(e));
+    window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search });
 
   return (
     <>

@@ -11,17 +11,10 @@ export default function PrivacyPolicy() {
   const title = "プライバシーポリシー - noreta.net";
 
   const description = "このサイト、サービスのプライバシーポリシーについて記述します";
-  // description
-  // document
-  //   .querySelector('meta[name="description"]')
-  //   .setAttribute("content", description);
-
-  // const location = useLocation();
 
   useEffect(() => {
     // GA4
     window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search })
-    // window.gtag('config', 'G-L8YDJSX9JX');
   }, []);
 
   return (
