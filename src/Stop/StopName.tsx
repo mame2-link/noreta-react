@@ -1,4 +1,3 @@
-// import { useLocation } from "react-router";
 import type { Schema } from "../../amplify/data/resource";
 
 import Box from "@mui/material/Box";

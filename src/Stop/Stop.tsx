@@ -14,17 +14,18 @@ import { StopTimes } from "./StopTimes";
 import { HideHomeHeader } from "../Common/HideHomeHeader";
 import { CommonFooter } from "../Common/CommonFooter";
 import { addStopId } from "../Common/IndexedDb";
+import { agencies } from "../Common/Agencies";
 import {
   toHalfWidth,
   // setLinkCanonical,
-  // setMetaOgTitle,
+  setMetaOgTitle,
 } from "../Common/CommonFunc";
-import { agencies } from "../Common/Agencies";
+
 const MAX_HEADSING = 3;
 
 export default function Stop() {
   const { stopId } = useParams();
-  const [stop, setStop] = useState<Schema["Stop"]["type"]>();
+  const [stop, setStop] = useState<Schema["Stop"]["type"] | null>(null);
   const [errorStatus, setErrorStatus] = useState(false);
 
   // location query
@@ -43,13 +44,14 @@ export default function Stop() {
       setStop(value.data);
     };
     fetchData();
+
     // indexedDB
     addStopId(stopId!).catch((e) => console.error(e));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (!stop) return;
-    console.log(stop);
+    if (stop === null) return;
     let description = "#busStopの時刻表です。";
     // stopName
     let stopName = stop.stop_name;
@@ -85,6 +87,7 @@ export default function Stop() {
     let title = toHalfWidth(stopName + shortSub);
     if (page !== null) title += " page " + page;
     document.title = title;
+    setMetaOgTitle(title);
 
     // description
     stopName = stop.stop_name;
@@ -106,23 +109,19 @@ export default function Stop() {
         "です。";
     }
     description = toHalfWidth(description);
+    document?.querySelector('meta[name="description"]')?.setAttribute("content", description);
 
     // canonical
     // const canonical_url = "https://noreta.net/stop/" + stop.stop_id;
     // setLinkCanonical(canonical_url);
 
     // GA4
-    // console.log(window.gtag);
-    // console.log(window.dataLayer);
     window.gtag('js', new Date());
     window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search });
-  }, [stop, page, location.pathname, location.search]);
+  });
 
   return (
     <>
-      {/* <title>{title}</title>
-      <meta property="og:title" content={title} />
-      <meta name="description" content={description} /> */}
       {stop && <HideHomeHeader stop={stop} />}
       <main>
         {errorStatus && (
