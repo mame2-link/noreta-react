@@ -18,7 +18,7 @@ import AdminInfo from "./AdminInfo";
 import PrivacyPolicy from "./PrivacyPolicy";
 import Terms from "./Terms";
 import NotFound from "./NotFound";
-import { CookieConsentManager } from "./CookieConsent/CookieConsentManager";
+// import { CookieConsentManager } from "./CookieConsent/CookieConsentManager";
 
 const theme = createTheme({
   // typography: {
@@ -43,10 +43,9 @@ const theme = createTheme({
   // },
 });
 
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
+    < ThemeProvider theme={theme} >
       <CssBaseline />
       <BrowserRouter>
         <Routes>
@@ -64,7 +63,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="*" element={<NotFound />}></Route>
         </Routes>
       </BrowserRouter>
-    </ThemeProvider>
-    <CookieConsentManager />
+    </ThemeProvider >
+    {/* <CookieConsentManager /> */}
   </StrictMode>
 );

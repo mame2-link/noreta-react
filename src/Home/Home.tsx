@@ -35,7 +35,6 @@ function Home() {
       .catch((e) => console.error(e));
   }, []);
 
-  window.gtag('js', new Date());
   window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search });
 
   return (

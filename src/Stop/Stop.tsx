@@ -35,23 +35,7 @@ export default function Stop() {
   const page = pageStr === null ? null : parseInt(pageStr);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const value = await getStop(stopId!);
-      if (!value.data) {
-        setErrorStatus(true);
-        return;
-      }
-      setStop(value.data);
-    };
-    fetchData();
-
-    // indexedDB
-    addStopId(stopId!).catch((e) => console.error(e));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (stop === null) return;
+    if (!stop) return;
     let description = "#busStopの時刻表です。";
     // stopName
     let stopName = stop.stop_name;
@@ -116,18 +100,38 @@ export default function Stop() {
     // setLinkCanonical(canonical_url);
 
     // GA4
-    window.gtag('js', new Date());
     window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search });
-  });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.key]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const value = await getStop(stopId!);
+      if (!value.data) {
+        setErrorStatus(true);
+        return;
+      }
+      setStop(value.data);
+    };
+    fetchData();
+
+    // indexedDB
+    addStopId(stopId!).catch((e) => console.error(e));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
+      {/* <title>{title}</title>
+      <meta property="og:title" content={title} />
+      <meta name="description" content={description} /> */}
       {stop && <HideHomeHeader stop={stop} />}
       <main>
         {errorStatus && (
           <Typography sx={{ m: 2 }}>バス停が見つかりません😔</Typography>
         )}
-        {stop && <StopName stop={stop} />}
+        {stop !== null && <StopName stop={stop} />}
         {stop && <StopTimes stop={stop} page={page} />}
       </main>
       <Box sx={{ my: 2 }}>

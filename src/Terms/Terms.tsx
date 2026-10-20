@@ -12,7 +12,6 @@ export default function Terms() {
 
   useEffect(() => {
     // GA4
-    window.gtag('js', new Date());
     window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search });
   }, []);
 
