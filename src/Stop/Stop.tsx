@@ -34,8 +34,8 @@ export default function Stop() {
   const pageStr = queryParams.get("page");
   const page = pageStr === null ? null : parseInt(pageStr);
 
-  useEffect(() => {
-    if (!stop) return;
+  const updateTitle = (stop: Schema["Stop"]["type"] | null) => {
+    if (stop === null) return;
     let description = "#busStopの時刻表です。";
     // stopName
     let stopName = stop.stop_name;
@@ -102,8 +102,11 @@ export default function Stop() {
     // GA4
     window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search });
 
+  }
+
+  useEffect(() => updateTitle(stop)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.key]);
+    , [location.key]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -112,6 +115,7 @@ export default function Stop() {
         setErrorStatus(true);
         return;
       }
+      updateTitle(value.data);
       setStop(value.data);
     };
     fetchData();
