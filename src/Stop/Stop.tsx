@@ -17,7 +17,7 @@ import { addStopId } from "../Common/IndexedDb";
 import { agencies } from "../Common/Agencies";
 import {
   toHalfWidth,
-  // setLinkCanonical,
+  setLinkCanonical,
   setMetaOgTitle,
 } from "../Common/CommonFunc";
 
@@ -35,8 +35,8 @@ export default function Stop() {
   const page = pageStr === null ? null : parseInt(pageStr);
 
   const updateTitle = (stop: Schema["Stop"]["type"] | null) => {
-    if (stop === null) return;
     let description = "#busStopの時刻表です。";
+    if (stop === null) return;
     // stopName
     let stopName = stop.stop_name;
     if (stop.platform_code) stopName += " " + stop.platform_code; // のりば
@@ -96,17 +96,19 @@ export default function Stop() {
     document?.querySelector('meta[name="description"]')?.setAttribute("content", description);
 
     // canonical
-    // const canonical_url = "https://noreta.net/stop/" + stop.stop_id;
-    // setLinkCanonical(canonical_url);
+    const canonical_url = "https://noreta.net/stop/" + stop.stop_id;
+    setLinkCanonical(canonical_url);
 
     // GA4
     window.gtag('event', 'page_view', { page_title: title, page_location: location.pathname + location.search });
 
   }
 
+
   useEffect(() => updateTitle(stop)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     , [location.key]);
+
 
   useEffect(() => {
     const fetchData = async () => {

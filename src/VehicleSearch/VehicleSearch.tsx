@@ -20,12 +20,6 @@ export default function VehicleSearch() {
   const [agencyId, setAgencyId] = useState(defaultValue);
   const [vehicleId, setVehicleId] = useState(defaultVehicleId);
 
-  // document.title = "車番検索";
-
-  // document
-  //   .querySelector('meta[name="description"]')
-  //   .setAttribute("content", "車番検索");
-
   const handleClick = () => {
     const vehicle_id = agencyId + "-" + vehicleId;
     navigate("/vehicle/" + vehicle_id);
@@ -48,13 +42,13 @@ export default function VehicleSearch() {
     );
   }
 
-  // const location = useLocation();
-
   useEffect(() => {
+    document.title = "車番検索";
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute("content", "車番検索");
     // GA4
-    // window.gtag('js', new Date());
-    // window.gtag('event', 'page_view', { page_title: document.title, page_location: location.pathname + location.search })
-    // window.gtag('config', 'G-L8YDJSX9JX');
+    window.gtag('event', 'page_view', { page_title: document.title, page_location: location.pathname + location.search })
   }, []);
 
   return (

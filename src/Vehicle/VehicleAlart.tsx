@@ -1,29 +1,42 @@
+import { useEffect, useState } from "react";
+import { Schema } from "../../amplify/data/resource";
 import Alert, { type AlertColor } from "@mui/material/Alert";
 
-export function VehicleAlart({ past_min }: { past_min: number }) {
+
+export function VehicleAlart({ vehicle }: { vehicle: Schema["Vehicle"]["type"] }) {
+
+    const [pastMin, setPastMin] = useState(0);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const vDate = new Date(vehicle.timestamp! * 1000);
+            setPastMin(Math.round((Date.now() - vDate.getTime()) / 1000 / 60));
+        }
+        fetchData();
+    });
 
     let severity: AlertColor = "info";
-    if (past_min > 4) {
+    if (pastMin > 4) {
         severity = "warning";
     }
-    if (past_min > 9) {
+    if (pastMin > 9) {
         severity = "error";
     }
 
     let unit = "分";
-    if (past_min >= 60) {
+    if (pastMin >= 60) {
         unit = "時間";
     }
-    if (past_min >= 60 * 24) {  // 24時間以上
+    if (pastMin >= 60 * 24) {  // 24時間以上
         unit = "日";
     }
 
-    let m = past_min;
+    let m = pastMin;
     if (unit === "時間") {
-        m = Math.round(past_min / 60);
+        m = Math.round(pastMin / 60);
     }
     if (unit === "日") {
-        m = Math.round(past_min / 60 / 24);
+        m = Math.round(pastMin / 60 / 24);
     }
 
     return <Alert severity={severity}>約{m}{unit}前の車両の位置です</Alert>;

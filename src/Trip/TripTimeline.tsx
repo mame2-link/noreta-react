@@ -19,70 +19,24 @@ import {
   delayMin,
   scrollToAnchor,
   spentSec,
-  toHalfWidth,
-  setMetaOgTitle,
-  // setLinkCanonical,
 } from "../Common/CommonFunc";
-
-import { agencies } from "../Common/Agencies";
 import { trip_state } from "../lib/trip_state";
 
 export default function TripTimeline({ state }: { state: trip_state }) {
-  useEffect(() => {
-    scrollToAnchor();
-  }, []);
 
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const seq = query.get("seq");
   const stopTimes = state.stop_times;
   const stops = state.stops;
-  const trip = state.trip;
   const route = state.route;
-  const route_short_name = route.route_short_name;
   const route_color = "#" + route.route_color;
-  const agency_name = agencies.get(route.agency_id)?.agency_name;
   const HOUR9SEC = 32400; // 9 Hour === 32400 Seconds
-  let title = agency_name + " ";
+
   const stopMap = new Map();
   for (const stop of stops) {
     stopMap.set(stop.stop_id, stop);
   }
-  if (route_short_name) title += "(" + route_short_name + ")";
-  let headsign = "";
-  let s2 = null;
-  for (let i = 0; i < stopTimes.length; i++) {
-    if (stopTimes[i].stop_sequence === Number(seq)) {
-      headsign = stopTimes[i].stop_headsign!;
-      // const canonical_url =
-      //   "https://noreta.net/stop/" + stopTimes[i].stop_id;
-      // setLinkCanonical(canonical_url);
-      if (i > 0) {
-        const s = stopMap.get(stopTimes[i].stop_id);
-        s2 = hhmm(stopTimes[i].departure_time!) + " " + s.stop_name;
-        if (s.platform_code) s2 += " のりば" + s.platform_code;
-      }
-      break;
-    }
-  }
-  if (!headsign || headsign.length < 1) headsign = trip.trip_headsign!;
-  title += " " + headsign + " " + hhmm(stopTimes[0].departure_time!);
-  const s = stopMap.get(stopTimes[0].stop_id);
-
-  let stopName = s.stop_name;
-  if (s.platform_code) stopName += " のりば" + s.platform_code;
-  title += " " + stopName;
-  if (s2) title += " - " + s2;
-  title = toHalfWidth(title);
-  // document.title = title;
-
-  // og:title
-  setMetaOgTitle(title);
-
-  // description
-  // document
-  //   .querySelector('meta[name="description"]')
-  //   .setAttribute("content", title);
 
   const list = [];
   const timestamp0 = initBaseTimestamp(); // 遅れを計算する前に実行
@@ -170,23 +124,19 @@ export default function TripTimeline({ state }: { state: trip_state }) {
     );
   }
 
-  // GA4
-  // window.gtag('js', new Date());
-  // window.gtag('event', 'page_view', { page_title: document.title, page_location: location.pathname + location.search })
-  // window.gtag('config', 'G-L8YDJSX9JX');
+  useEffect(() => {
+    scrollToAnchor();
+  }, []);
 
   return (
-    <>
-      <title>{title}</title>
-      <Timeline
-        sx={{
-          [`& .${timelineOppositeContentClasses.root}`]: {
-            flex: 0.2,
-          },
-        }}
-      >
-        {list}
-      </Timeline>
-    </>
+    <Timeline
+      sx={{
+        [`& .${timelineOppositeContentClasses.root}`]: {
+          flex: 0.2,
+        },
+      }}
+    >
+      {list}
+    </Timeline>
   );
 }

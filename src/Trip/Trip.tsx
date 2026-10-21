@@ -22,7 +22,17 @@ import { toHalfWidth, setMetaRobotsNoindex } from "../Common/CommonFunc";
 import { VehicleNumber } from "../Common/VehicleNumber";
 import { trip_state } from "../lib/trip_state";
 import { StopTime } from "../lib/stop_time";
-
+import { agencies } from "../Common/Agencies";
+import {
+  hhmm,
+  // initBaseTimestamp,
+  // delayMin,
+  // scrollToAnchor,
+  // spentSec,
+  // toHalfWidth,
+  setMetaOgTitle,
+  // setLinkCanonical,
+} from "../Common/CommonFunc";
 
 export default function Trip() {
   const { tripId } = useParams();
@@ -40,6 +50,7 @@ export default function Trip() {
     if (!states) return null;
     return states.stops.find(stop => stop.stop_id === stopId);
   }
+
   let headsign = "";
   let vehicle_num = null;
   let vehicleUrl = null;
@@ -67,19 +78,18 @@ export default function Trip() {
     }
   }
 
-  // if (errorStatus) {
-  // let title = "本日は該当便がありません - 便ID: " + tripId + " " + seq;
-  // document.title = title;
-  // // description
-  // document
-  //   .querySelector('meta[name="description"]')
-  //   .setAttribute("content", title);
+  if (errorStatus) {
+    const title = "本日は該当便がありません - 便ID: " + tripId + " " + seq;
+    // eslint-disable-next-line react-hooks/immutability
+    document.title = title;
+    // description
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute("content", title);
 
-  // GA4
-  // window.gtag('js', new Date());
-  // window.gtag('event', 'exception', { 'description': 'trip error', 'fatal': false });
-  // window.gtag('config', 'G-L8YDJSX9JX');
-  // }
+    // GA4
+    window.gtag('event', 'exception', { 'description': 'trip error', 'fatal': false });
+  }
 
   useEffect(() => {
     const fetchStopTimes = async () => {
@@ -110,6 +120,47 @@ export default function Trip() {
         route: route,
       }
       setStates(states);
+
+      const stopMap = new Map();
+      for (const stop of stops) {
+        stopMap.set(stop.stop_id, stop);
+      }
+      const agency_name = agencies.get(route.agency_id)?.agency_name;
+      let title = agency_name + " ";
+      let headsign = "";
+      let s2 = null;
+      for (let i = 0; i < stopTimes.length; i++) {
+        if (stopTimes[i].stop_sequence === Number(seq)) {
+          headsign = stopTimes[i].stop_headsign!;
+          // const canonical_url =
+          //   "https://noreta.net/stop/" + stopTimes[i].stop_id;
+          // setLinkCanonical(canonical_url);
+          if (i > 0) {
+            const s = stopMap.get(stopTimes[i].stop_id);
+            s2 = hhmm(stopTimes[i].departure_time!) + " " + s.stop_name;
+            if (s.platform_code) s2 += " のりば" + s.platform_code;
+          }
+          break;
+        }
+      }
+      if (!headsign || headsign.length < 1) headsign = trip.trip_headsign!;
+      title += " " + headsign + " " + hhmm(stopTimes[0].departure_time!);
+      const s = stopMap.get(stopTimes[0].stop_id);
+
+      let stopName = s.stop_name;
+      if (s.platform_code) stopName += " のりば" + s.platform_code;
+      title += " " + stopName;
+      if (s2) title += " - " + s2;
+      title = toHalfWidth(title);
+      document.title = title;
+      // og:title
+      setMetaOgTitle(title);
+      // description
+      document
+        .querySelector('meta[name="description"]')
+        ?.setAttribute("content", title);
+
+      window.gtag('event', 'page_view', { page_title: document.title, page_location: location.pathname + location.search });
     };
     fetchStopTimes();
   }, []);

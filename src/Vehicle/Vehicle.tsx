@@ -11,11 +11,11 @@ import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-// import { agencies } from "../Common/Agencies";
+import { agencies } from "../Common/Agencies";
 import { HideTripBackHeader } from "./HideTripBackHeader";
 import { VehicleNumber } from "../Common/VehicleNumber";
 import { CommonFooter } from "../Common/CommonFooter";
-// import { setLinkCanonical } from "../Common/CommonFunc";
+import { setLinkCanonical } from "../Common/CommonFunc";
 import { VehicleAlart } from "./VehicleAlart";
 
 export default function Vehicle() {
@@ -44,6 +44,14 @@ export default function Vehicle() {
       const vehicle = await getVehicle(vehicleId);
       if (!vehicle) {
         setErrorStatus(true);
+        const title = "車番が見つかりません";
+        document.title = title;
+        // description
+        document
+          .querySelector('meta[name="description"]')
+          ?.setAttribute("content", title);
+        // GA4
+        window.gtag('event', 'exception', { 'description': vehicleId, 'fatal': false });
         return;
       }
       setVehicle(vehicle);
@@ -83,21 +91,21 @@ export default function Vehicle() {
       setRoute(route);
 
       // title description
-      // let title = "車両情報 ";
-      // let description = "の車両情報です";
-      // let vehicle_num = null;
+      let title = "車両情報 ";
+      let description = "の車両情報です";
+      let vehicle_num = null;
 
-      // const n = route.agency_id.length + 1;
-      // vehicle_num = vehicleId.slice(n);
-      // const agency_name = agencies.get(route.agency_id).agency_name;
-      // title = title + vehicle_num + " " + agency_name;
-      // description = agency_name + " " + vehicle_num + " " + description;
-      // document.title = title;
-      // document
-      //   .querySelector('meta[name="description"]')
-      //   .setAttribute("content", description);
-      // const canonical_url = "https://noreta.net/vehicle/" + vehicleId;
-      // setLinkCanonical(canonical_url);
+      const n = route.agency_id.length + 1;
+      vehicle_num = vehicleId.slice(n);
+      const agency_name = agencies.get(route.agency_id).agency_name;
+      title = title + vehicle_num + " " + agency_name;
+      description = agency_name + " " + vehicle_num + " " + description;
+      document.title = title;
+      document
+        .querySelector('meta[name="description"]')
+        ?.setAttribute("content", description);
+      const canonical_url = "https://noreta.net/vehicle/" + vehicleId;
+      setLinkCanonical(canonical_url);
 
       // stop
       if (!stop_id) return;
@@ -110,7 +118,7 @@ export default function Vehicle() {
 
   let dt = null;
   let latest_trip_url = null;
-  let past_min = null;
+  // let past_min = null;
   let device_map_url = null;
 
   // let severity = "info";
@@ -120,14 +128,7 @@ export default function Vehicle() {
     if (vehicle.trip_id && vehicle.trip_id !== trip_id) {
       latest_trip_url = "/trip/" + vehicle.trip_id + "?seq=1";
     }
-    past_min = Math.round((Date.now() - vDate.getTime()) / 1000 / 60);
-    // if (past_min > 4) {
-    //   severity = "warning";
-    // }
-    // if (past_min > 9) {
-    //   severity = "error";
-    // }
-
+    // past_min = Math.round((Date.now() - vDate.getTime()) / 1000 / 60);
     const latlng = vehicle.latitude + "," + vehicle.longitude;
     let appleDevice = false;
     const ua = window.navigator.userAgent.toLowerCase();
@@ -145,20 +146,6 @@ export default function Vehicle() {
     device_map_url = map_url + latlng;
   }
 
-  if (errorStatus) {
-    // let title = "車番が見つかりません";
-    // document.title = title;
-    // // description
-    // document
-    //   .querySelector('meta[name="description"]')
-    //   .setAttribute("content", title);
-
-    // // GA4
-    // window.gtag('js', new Date());
-    // window.gtag('event', 'exception', { 'description': vehicleId, 'fatal': false });
-    // window.gtag('config', 'G-L8YDJSX9JX');
-  }
-
   return (
     <>
       {stop && trip_id && seq && (
@@ -174,9 +161,9 @@ export default function Vehicle() {
             車両が見つかりません😔<Link href="/vehicle_search">車両検索</Link>
           </Typography>
         )}
-        {past_min && (
+        {vehicle && (
           <Stack sx={{ m: 2 }}>
-            <VehicleAlart past_min={past_min} />
+            <VehicleAlart vehicle={vehicle} />
           </Stack>
         )}
         {vehicle_num && (
